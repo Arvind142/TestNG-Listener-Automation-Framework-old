@@ -5,7 +5,9 @@ import org.testng.annotations.Test;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 import org.testng.annotations.BeforeTest;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.testng.annotations.AfterTest;
 
@@ -17,6 +19,9 @@ public class BasicCheck {
 		driver.get("https://www.google.co.in");
 		driver.manage().window().maximize();
 		System.out.println("Navigation success!!!");
+		for(WebElement e:driver.findElements(By.tagName("a"))) {
+			System.out.println("link ->  "+e.getText());
+		}
 	}
 
 	@BeforeTest
