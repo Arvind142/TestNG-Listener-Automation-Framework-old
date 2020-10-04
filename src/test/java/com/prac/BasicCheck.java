@@ -19,9 +19,8 @@ public class BasicCheck {
 		driver.get("https://www.google.co.in");
 		driver.manage().window().maximize();
 		System.out.println("Navigation success!!!");
-		for(WebElement e:driver.findElements(By.tagName("a"))) {
-			System.out.println("link ->  "+e.getText());
-		}
+		for (WebElement e : driver.findElements(By.tagName("a")))
+			System.out.println("link ->  " + e.getText());
 	}
 
 	@BeforeTest
