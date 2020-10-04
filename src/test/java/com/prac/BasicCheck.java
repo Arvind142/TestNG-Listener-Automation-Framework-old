@@ -16,6 +16,7 @@ public class BasicCheck {
 	public void f() {
 		driver.get("https://www.google.co.in");
 		driver.manage().window().maximize();
+		System.out.println("Navigation success!!!");
 	}
 
 	@BeforeTest
@@ -24,11 +25,13 @@ public class BasicCheck {
 		WebDriverManager.edgedriver().setup();
 		// initializing driver
 		driver = new EdgeDriver();
+		System.out.println("Browser Started!");
 	}
 
 	@AfterTest
 	public void afterTest() {
 		driver.close();
+		System.out.println("Browser Closed!");
 	}
 
 }
