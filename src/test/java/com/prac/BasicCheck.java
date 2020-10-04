@@ -34,6 +34,7 @@ public class BasicCheck {
 
 	@AfterTest
 	public void afterTest() {
+		//closing browser
 		driver.close();
 		System.out.println("Browser Closed!");
 	}
