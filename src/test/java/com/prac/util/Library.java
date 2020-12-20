@@ -1,6 +1,6 @@
 package com.prac.util;
 
-//Imports
+import java.util.List;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -16,17 +16,26 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.codoid.products.fillo.Fillo;
+import com.codoid.products.fillo.Recordset;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
+/****
+ * Library class hold most basic and required methods to read properties files,
+ * initialize framework, logging.Libraray class method should not be modified by testers.
+ * 
+ * @author arvin
+ *
+ */
 public class Library {
 
 	// property variables
-	Properties applicationLevelProperty = new Properties();
-	Properties environmentLevelProperty = new Properties();
+	public Properties applicationLevelProperty = new Properties();
+	public Properties environmentLevelProperty = new Properties();
 
 	// environment and path
-	String environmentFolder;
-	String outputFolder;
+	public String environmentFolder;
+	public String outputFolder;
 
 	// driver related
 	public WebDriver driver;
@@ -61,6 +70,11 @@ public class Library {
 		}
 	}
 
+	/***
+	 * readEnvironmentLevelProperty is used to read environment properties. each
+	 * environment have different url's and connection details as per need so
+	 * categorized. this methods read and stores value in environment variable
+	 */
 	public void readEnvironmentLevelProperty() {
 		try (InputStream ins = getClass().getClassLoader()
 				.getResource(applicationLevelProperty.getProperty("Environment") + "/"
@@ -175,7 +189,7 @@ public class Library {
 	}
 
 	/***
-	 * thsi method lets code decides if this log statements should be considered as
+	 * this method lets code decides if this log statements should be considered as
 	 * pass/fail based on expected and actual value
 	 * 
 	 * @param StepDesciption description of log
@@ -189,7 +203,7 @@ public class Library {
 
 	/**
 	 * this methods lets user decide if log is pass/fail and pass that same status
-	 * as paramter in this method
+	 * as parameter in this method
 	 * 
 	 * @param StepDesciption description of step
 	 * @param expected       expected value
@@ -206,4 +220,41 @@ public class Library {
 	public void stopTestCaseReporting() {
 		extentReports.flush();
 	}
+
+	/***
+	 * getDataFromExcel retrieve testdata from excel and return it in Object[][]
+	 * fillo Libraries are used to get data from excel required parameter is
+	 * className which would select all cases from givenSheet, sheet name should be
+	 * same as class name. to categorize cases and leads to simplicity in
+	 * identification of cases and testData and script maintenance
+	 * 
+	 * @param className required parameter is className
+	 * @return Object[][] which holds testdata
+	 */
+	public Object[][] getDataFromExcel(String className) {
+		Object[][] excelData = null;
+		try {
+			Recordset recordSet = new Fillo()
+					.getConnection(getClass().getClassLoader()
+							.getResource(applicationLevelProperty.getProperty("Environment") + "/"
+									+ applicationLevelProperty.getProperty("ApplicationName") + ".xlsx")
+							.getPath())
+					.executeQuery("SELECT * FROM " + className + " where Execution_FLag='Y'");
+			excelData = new Object[recordSet.getCount()][recordSet.getFieldNames().size()];
+			List<String> columns = recordSet.getFieldNames();
+			Integer colLocator = 0, rowLocator = 0;
+			while (recordSet.next()) {
+				colLocator = 0;
+				for (String column : columns) {
+					excelData[rowLocator][colLocator] = recordSet.getField(column);
+					colLocator++;
+				}
+				rowLocator++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return excelData;
+	}
+
 }
