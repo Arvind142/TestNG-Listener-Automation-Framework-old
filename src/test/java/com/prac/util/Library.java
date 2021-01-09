@@ -4,6 +4,8 @@ import java.util.List;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.WebDriver;
@@ -22,7 +24,8 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 /****
  * Library class hold most basic and required methods to read properties files,
- * initialize framework, logging.Libraray class method should not be modified by testers.
+ * initialize framework, logging.Libraray class method should not be modified by
+ * testers.
  * 
  * @author arvin
  *
@@ -30,8 +33,8 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class Library {
 
 	// property variables
-	public Properties applicationLevelProperty = new Properties();
-	public Properties environmentLevelProperty = new Properties();
+	public final Properties applicationLevelProperty = new Properties();
+	public final Properties environmentLevelProperty = new Properties();
 
 	// environment and path
 	public String environmentFolder;
@@ -41,9 +44,9 @@ public class Library {
 	public WebDriver driver;
 
 	// reporting
-	ExtentTest extentTest;
-	ExtentReports extentReports;
-	ExtentSparkReporter extentSparkReporter;
+	protected ExtentTest extentTest;
+	protected ExtentReports extentReports;
+	protected ExtentSparkReporter extentSparkReporter;
 
 	/**
 	 * This method will help in reading application level property
@@ -255,6 +258,26 @@ public class Library {
 			e.printStackTrace();
 		}
 		return excelData;
+	}
+
+	/***
+	 * getMySQLDBConnection method can be used to get connection established to
+	 * mySQL DB
+	 * 
+	 * @param host     dbhost
+	 * @param username dbusername
+	 * @param password dbpassword
+	 * @return return connection of java.sql.connection type when connection is
+	 *         successful or else null
+	 */
+	public Connection getMySqlDBConnection(String host, String username, String password) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			return DriverManager.getConnection("jdbc:mysql://" + host, username, password);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeSuite;
  * @author arvin
  *
  */
-public class BaseClass {
+public class TestNGBase {
 	public BusinessFunction businessFunction = new BusinessFunction();
 
 	/***
