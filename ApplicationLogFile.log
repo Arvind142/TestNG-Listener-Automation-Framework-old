@@ -1,0 +1,5 @@
+[main] INFO  com.prac.util.Library  - Application Level property file read successfully! 
+[main] INFO  com.prac.util.Library  - environment Level property file read successfully! 
+[main] INFO  com.prac.util.Library  - Check_Existance_of_Page reporting started
+[main] INFO  com.prac.util.Library  - Driver initialized!
+[main] INFO  com.prac.util.Library  - Browser Startup	 || expected: Google & actual: Google
