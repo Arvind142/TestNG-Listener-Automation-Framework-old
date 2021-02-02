@@ -22,7 +22,6 @@ public class TestNGBase {
 	public void beforeSuite() {
 		businessFunction.readApplicaitonLevelProperty();
 		businessFunction.readEnvironmentLevelProperty();
-		businessFunction.creatingReportFolder();
 	}
 
 	@AfterSuite
