@@ -8,9 +8,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -51,9 +48,6 @@ public class Library {
 	protected ExtentReports extentReports;
 	protected ExtentSparkReporter extentSparkReporter;
 
-	// loggers
-	public static Logger logger = Logger.getLogger(Library.class);
-
 	/**
 	 * This method will help in reading application level property
 	 */
@@ -71,13 +65,10 @@ public class Library {
 			if (!new File(environmentFolder).exists())
 				new File(environmentFolder).mkdirs();
 			creatingReportFolder();
-			logger.info("Application Level property file read successfully! ");
 		} catch (FileNotFoundException e) {
-			logger.error("Application Level property file missing! ");
 			System.out.println("applicaiton level property file missing!");
 
 		} catch (Exception e) {
-			logger.error("some error! " + e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -97,13 +88,10 @@ public class Library {
 			if (environmentLevelProperty.keySet().size() == 0) {
 				throw new Exception("Invalid Property file");
 			}
-			logger.info("environment Level property file read successfully! ");
 		} catch (FileNotFoundException e) {
-			logger.error("environment Level property file missing! ");
 			System.out.println("environment level property file missing!");
 
 		} catch (Exception e) {
-			logger.error("some error! " + e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -137,9 +125,7 @@ public class Library {
 			default:
 				throw new Exception("Invalid BrowserName");
 			}
-			logger.info("Driver initialized!");
 		} catch (Exception e) {
-			logger.error("some error! " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -170,7 +156,6 @@ public class Library {
 		outputFolder = environmentFolder + (new File(environmentFolder).listFiles().length + 1) + "";
 		new File(outputFolder).mkdir();
 		System.setProperty("log", outputFolder);
-		PropertyConfigurator.configure(getClass().getClassLoader().getResource("log4j.properties"));
 		// creating report
 		extentSparkReporter = new ExtentSparkReporter(outputFolder + "/index.html");
 		extentSparkReporter.config().setEncoding("utf-8");
@@ -197,7 +182,6 @@ public class Library {
 	 */
 	public void startTestCaseReporting(String className) {
 		extentTest = extentReports.createTest(className);
-		logger.info(className + " reporting started");
 	}
 
 	/***
@@ -206,7 +190,6 @@ public class Library {
 	 * @param stepDescription step description of log
 	 */
 	public void logResult(String stepDescription) {
-		logger.info(stepDescription);
 		extentTest.log(Status.INFO, stepDescription);
 	}
 
@@ -219,7 +202,6 @@ public class Library {
 	 * @param actual         actual result
 	 */
 	public void logResult(String StepDesciption, String expected, String actual) {
-		logger.info(StepDesciption + "\t || expected: " + expected + " & actual: " + actual);
 		extentTest.log(expected.equalsIgnoreCase(actual) ? Status.PASS : Status.FAIL,
 				StepDesciption + " expected: " + expected + " & actual: " + actual);
 	}
@@ -235,7 +217,6 @@ public class Library {
 	 */
 	public void logResult(String StepDesciption, String expected, String actual, Status status) {
 		extentTest.log(status, StepDesciption + "\t || expected: " + expected + " & actual: " + actual);
-		logger.info(status + ":" + StepDesciption + "\t || expected: " + expected + " & actual: " + actual);
 	}
 
 	/***
