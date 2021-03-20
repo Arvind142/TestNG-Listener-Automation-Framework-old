@@ -272,10 +272,21 @@ public class Library {
 	 * @return return connection of java.sql.connection type when connection is
 	 *         successful or else null
 	 */
-	public Connection getMySqlDBConnection(String host, String username, String password) {
+	public Connection getDBConnection(String dataBaseName, String host, String port, String service, String username,
+			String password) {
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			return DriverManager.getConnection("jdbc:mysql://" + host, username, password);
+			switch (dataBaseName.toLowerCase()) {
+			case "mysql":
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + service, username,
+						password);
+			case "oracle":
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				return DriverManager.getConnection("jdbc:oracle:thin:@" + host + ":" + port + ":" + service,
+						username, password);
+			default:
+				return null;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
