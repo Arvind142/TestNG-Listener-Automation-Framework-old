@@ -6,13 +6,22 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -20,6 +29,8 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.codoid.products.fillo.Fillo;
 import com.codoid.products.fillo.Recordset;
+import com.google.common.base.Function;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 /****
@@ -33,20 +44,15 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class Library {
 
 	// property variables
-	public final Properties applicationLevelProperty = new Properties();
-	public final Properties environmentLevelProperty = new Properties();
+	public final static Properties applicationLevelProperty = new Properties();
+	public final static Properties environmentLevelProperty = new Properties();
 
 	// environment and path
-	public String environmentFolder;
-	public String outputFolder;
+	public static String environmentFolder;
+	public static String outputFolder;
 
 	// driver related
 	public WebDriver driver;
-
-	// reporting
-	protected ExtentTest extentTest;
-	protected ExtentReports extentReports;
-	protected ExtentSparkReporter extentSparkReporter;
 
 	/**
 	 * This method will help in reading application level property
@@ -156,32 +162,7 @@ public class Library {
 		outputFolder = environmentFolder + (new File(environmentFolder).listFiles().length + 1) + "";
 		new File(outputFolder).mkdir();
 		System.setProperty("log", outputFolder);
-		// creating report
-		extentSparkReporter = new ExtentSparkReporter(outputFolder + "/index.html");
-		extentSparkReporter.config().setEncoding("utf-8");
-		extentSparkReporter.config().setDocumentTitle("Execution status");
-		extentSparkReporter.config().setReportName("Automation Tets Report");
-		extentSparkReporter.config().setTheme(Theme.DARK);
 
-		extentReports = new ExtentReports();
-		extentReports.setSystemInfo("Application Level Properties : ", "");
-		for (Object key : applicationLevelProperty.keySet())
-			extentReports.setSystemInfo(key.toString(), applicationLevelProperty.get(key).toString());
-		extentReports.setSystemInfo("Environment Level Properties : ", "");
-		for (Object key : environmentLevelProperty.keySet())
-			extentReports.setSystemInfo(key.toString(), environmentLevelProperty.get(key).toString());
-		extentReports.attachReporter(extentSparkReporter);
-	}
-
-	// below code is for specific tc reporting
-	/***
-	 * this method will create report for specific test initiation
-	 * 
-	 * @param className current we are using classname as test name sooon will
-	 *                  change
-	 */
-	public void startTestCaseReporting(String className) {
-		extentTest = extentReports.createTest(className);
 	}
 
 	/***
@@ -190,7 +171,7 @@ public class Library {
 	 * @param stepDescription step description of log
 	 */
 	public void logResult(String stepDescription) {
-		extentTest.log(Status.INFO, stepDescription);
+		ReporterClass.extentTest.log(Status.INFO, stepDescription);
 	}
 
 	/***
@@ -202,7 +183,7 @@ public class Library {
 	 * @param actual         actual result
 	 */
 	public void logResult(String StepDesciption, String expected, String actual) {
-		extentTest.log(expected.equalsIgnoreCase(actual) ? Status.PASS : Status.FAIL,
+		ReporterClass.extentTest.log(expected.equalsIgnoreCase(actual) ? Status.PASS : Status.FAIL,
 				StepDesciption + " expected: " + expected + " & actual: " + actual);
 	}
 
@@ -216,14 +197,7 @@ public class Library {
 	 * @param status         status of log to be reported
 	 */
 	public void logResult(String StepDesciption, String expected, String actual, Status status) {
-		extentTest.log(status, StepDesciption + "\t || expected: " + expected + " & actual: " + actual);
-	}
-
-	/***
-	 * this methods lets extentReporter know that we can close reporting for test
-	 */
-	public void stopTestCaseReporting() {
-		extentReports.flush();
+		ReporterClass.extentTest.log(status, StepDesciption + "\t || expected: " + expected + " & actual: " + actual);
 	}
 
 	/***
@@ -282,8 +256,8 @@ public class Library {
 						password);
 			case "oracle":
 				Class.forName("oracle.jdbc.driver.OracleDriver");
-				return DriverManager.getConnection("jdbc:oracle:thin:@" + host + ":" + port + ":" + service,
-						username, password);
+				return DriverManager.getConnection("jdbc:oracle:thin:@" + host + ":" + port + ":" + service, username,
+						password);
 			default:
 				return null;
 			}
@@ -291,6 +265,58 @@ public class Library {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	/***
+	 * below method would return by class object with locator populated
+	 * @param locator
+	 * @return by Object
+	 */
+	public By by(String locator) {
+		String identifier=locator.split("~")[0];
+		switch(identifier){
+			case Constants.WebLocator.ID:
+				return By.id(locator.split("~")[1]);
+			case Constants.WebLocator.NAME:
+				return By.name(locator.split("~")[1]);
+			case Constants.WebLocator.XPATH:
+				return By.xpath(locator.split("~")[1]);
+			case Constants.WebLocator.TAGNAME:
+				return By.tagName(locator.split("~")[1]);
+			case Constants.WebLocator.LINKTEXT:
+				return By.linkText(locator.split("~")[1]);
+			default:
+				return null;
+		}
+	}
+
+	
+	/***
+	 * below method follows fluent wait mechanism 
+	 * @param driver
+	 * @param locator
+	 * @param exception
+	 * @param timeout
+	 * @return will return webelement or null based on method execution 
+	 */
+	public WebElement getWebElement(WebDriver driver, String locator, Integer timeout) {
+		
+		//fluent Wait declaration
+		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeout))
+				.pollingEvery(Duration.ofSeconds(1)).ignoring(NoSuchElementException.class);
+		
+		//use of FluentWait
+		return wait.until(new Function<WebDriver, WebElement>() {
+			
+			//implementing interface method
+			@Override
+			public WebElement apply(WebDriver driver) {
+				//returning value
+				//if element not found null will be returned and it will check again till timeout duration is not reached
+				return driver.findElement(by(locator));
+			}
+		});
+
 	}
 
 }
