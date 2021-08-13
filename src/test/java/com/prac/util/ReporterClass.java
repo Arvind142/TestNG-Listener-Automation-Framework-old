@@ -22,19 +22,16 @@ public class ReporterClass implements ITestListener {
 	@Override
 	public void onTestSuccess(ITestResult result) {
 		System.out.println("Success of test cases and its details are : " + result.getName());
-		extentReports.flush();
 	}
 
 	@Override
 	public void onTestFailure(ITestResult result) {
 		System.out.println("Failure of test cases and its details are : " + result.getName());
-		extentReports.flush();
 	}
 
 	@Override
 	public void onTestSkipped(ITestResult result) {
 		System.out.println("Skip of test cases and its details are : " + result.getName());
-		extentReports.flush();
 	}
 
 	@Override
@@ -62,6 +59,7 @@ public class ReporterClass implements ITestListener {
 
 	@Override
 	public void onFinish(ITestContext context) {
-		
+		System.out.println("Failure of test cases and its details are : " + context.getName());
+		extentReports.flush();
 	}
 }

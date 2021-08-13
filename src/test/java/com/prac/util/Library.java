@@ -1,18 +1,29 @@
 package com.prac.util;
 
+import java.util.Calendar;
 import java.util.List;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
+
+import org.apache.maven.shared.utils.io.FileUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -201,6 +212,41 @@ public class Library {
 	}
 
 	/***
+	 * below methods captures snapshot it can be screen/full desktop snap(includes
+	 * task bar) type is decided by snip if snip is true means snip(full Desktop)
+	 * else only browser view page will be captured
+	 * 
+	 * @param snip true -> snip full screen, false -> only browser window
+	 * @param name screenshot name
+	 * @return	path where screenshot is exported
+	 */
+	public String getScreenShot(boolean snip, String name) {
+		String ssPath = "";
+		if (snip) {
+			try {
+				BufferedImage image = new Robot()
+						.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+				File f = new File(outputFolder + getCurrentDate("yyMMddHHmmss") + name + ".png");
+				ImageIO.write(image, "png", f);
+				ssPath = f.getAbsolutePath();
+			} catch (Exception e) {
+				ssPath = "";
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				File dest = new File(outputFolder + getCurrentDate("yyMMddHHmmss") + name + ".png");
+				FileUtils.copyFile(((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE), dest);
+				ssPath = dest.getAbsolutePath();
+			} catch (Exception e) {
+				ssPath = "";
+				e.printStackTrace();
+			}
+		}
+		return ssPath;
+	}
+
+	/***
 	 * getDataFromExcel retrieve testdata from excel and return it in Object[][]
 	 * fillo Libraries are used to get data from excel required parameter is
 	 * className which would select all cases from givenSheet, sheet name should be
@@ -266,57 +312,71 @@ public class Library {
 			return null;
 		}
 	}
-	
+
 	/***
 	 * below method would return by class object with locator populated
+	 * 
 	 * @param locator
 	 * @return by Object
 	 */
 	public By by(String locator) {
-		String identifier=locator.split("~")[0];
-		switch(identifier){
-			case Constants.WebLocator.ID:
-				return By.id(locator.split("~")[1]);
-			case Constants.WebLocator.NAME:
-				return By.name(locator.split("~")[1]);
-			case Constants.WebLocator.XPATH:
-				return By.xpath(locator.split("~")[1]);
-			case Constants.WebLocator.TAGNAME:
-				return By.tagName(locator.split("~")[1]);
-			case Constants.WebLocator.LINKTEXT:
-				return By.linkText(locator.split("~")[1]);
-			default:
-				return null;
+		String identifier = locator.split("~")[0];
+		switch (identifier) {
+		case Constants.WebLocator.ID:
+			return By.id(locator.split("~")[1]);
+		case Constants.WebLocator.NAME:
+			return By.name(locator.split("~")[1]);
+		case Constants.WebLocator.XPATH:
+			return By.xpath(locator.split("~")[1]);
+		case Constants.WebLocator.TAGNAME:
+			return By.tagName(locator.split("~")[1]);
+		case Constants.WebLocator.LINKTEXT:
+			return By.linkText(locator.split("~")[1]);
+		default:
+			return null;
 		}
 	}
 
-	
 	/***
-	 * below method follows fluent wait mechanism 
+	 * below method follows fluent wait mechanism to find element
+	 * 
 	 * @param driver
 	 * @param locator
-	 * @param exception
 	 * @param timeout
-	 * @return will return webelement or null based on method execution 
+	 * @return will return webelement or null based on method execution
 	 */
 	public WebElement getWebElement(WebDriver driver, String locator, Integer timeout) {
-		
-		//fluent Wait declaration
+
+		// fluent Wait declaration
 		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeout))
 				.pollingEvery(Duration.ofSeconds(1)).ignoring(NoSuchElementException.class);
-		
-		//use of FluentWait
+
+		// use of FluentWait
 		return wait.until(new Function<WebDriver, WebElement>() {
-			
-			//implementing interface method
+
+			// implementing interface method
 			@Override
 			public WebElement apply(WebDriver driver) {
-				//returning value
-				//if element not found null will be returned and it will check again till timeout duration is not reached
+
+				// returning value
+				// if element not found null will be returned and it will check again till
+				// timeout duration is not reached
 				return driver.findElement(by(locator));
 			}
 		});
+	}
 
+	/***
+	 * below method will return current date in requested format
+	 * 
+	 * @param Date Format
+	 * @return date
+	 * @throws Exception
+	 */
+	public String getCurrentDate(String format) throws Exception {
+		Calendar cal = Calendar.getInstance();
+		String result = new SimpleDateFormat(format).format(cal.getTime());
+		return result;
 	}
 
 }

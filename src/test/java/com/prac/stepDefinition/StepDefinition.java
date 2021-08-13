@@ -41,8 +41,8 @@ public class StepDefinition {
 		System.out.println("::::check_more_outcomes");
 	}
 
-	@Given("I want to write a step with name1")
-	public void i_want_to_write_a_step_with_name1() {
+	@Given("I want to write a step with {char}")
+	public void i_want_to_write_a_step_with() {
 		System.out.println("::::i_want_to_write_a_step_with_name1");
 	}
 
@@ -51,19 +51,9 @@ public class StepDefinition {
 		System.out.println("::::i_check_for_the_in_step");
 	}
 
-	@Then("I verify the success in step")
-	public void i_verify_the_success_in_step() {
+	@Then("I verify the {$%s} in step")
+	public void i_verify_the_in_step() {
 		System.out.println("::::i_verify_the_success_in_step");
-	}
-
-	@Given("I want to write a step with name2")
-	public void i_want_to_write_a_step_with_name2() {
-		System.out.println("::::i_want_to_write_a_step_with_name2");
-	}
-
-	@Then("I verify the Fail in step")
-	public void i_verify_the_fail_in_step() {
-		System.out.println("::::i_verify_the_fail_in_step");
 	}
 
 }

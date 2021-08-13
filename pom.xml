@@ -5,8 +5,13 @@
 	<groupId>com.personal</groupId>
 	<artifactId>TestNG_Framework</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
+	<packaging>jar</packaging>
+	<properties>
+		<major-version>1</major-version>
+		<minor-version>9</minor-version>
+	</properties>
 	<build>
+		<finalName>${major-version}.${minor-version}-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
