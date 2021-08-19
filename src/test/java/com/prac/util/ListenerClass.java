@@ -75,7 +75,8 @@ public class ListenerClass implements ITestListener {
 			System.out.println(e + "->" + ResultLogClass.testResultMap.get(e));
 		}
 		this.toString();
-		HTMLReporting report = new HTMLReporting(context);
+		HTMLReporting report = new HTMLReporting();
+		report.createReport(context);
 	}
 
 	/**

@@ -24,7 +24,7 @@ public class HTMLReporting {
 	// properties
 	Properties applicationLevelProperty = new Properties();
 
-	public HTMLReporting(ITestContext context) {
+	public void createReport(ITestContext context) {
 		// creating report folder
 		File reportFolder = createReportFolder();
 		// copying all files
@@ -78,7 +78,8 @@ public class HTMLReporting {
 			if (!environmentFolder.exists()) {
 				environmentFolder.mkdirs();
 			}
-			reportFolder = new File(environmentFolder.getAbsolutePath() + "/" + (environmentFolder.listFiles().length+1));
+			reportFolder = new File(
+					environmentFolder.getAbsolutePath() + "/" + (environmentFolder.listFiles().length + 1));
 			if (!reportFolder.exists()) {
 				reportFolder.mkdirs();
 			}
