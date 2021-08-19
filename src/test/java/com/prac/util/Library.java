@@ -13,11 +13,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.codoid.products.fillo.Fillo;
 import com.codoid.products.fillo.Recordset;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -40,31 +35,20 @@ public class Library {
 	public String environmentFolder;
 	public String outputFolder;
 
-	// driver related
-	public WebDriver driver;
-
-	// reporting
-	protected ExtentTest extentTest;
-	protected ExtentReports extentReports;
-	protected ExtentSparkReporter extentSparkReporter;
-
 	/**
 	 * This method will help in reading application level property
 	 */
 	public void readApplicaitonLevelProperty() {
 		try (InputStream ins = getClass().getClassLoader().getResource("ApplicationLevelConfig.properties")
 				.openStream()) {
-
 			applicationLevelProperty.load(ins);
 			if (applicationLevelProperty.keySet().size() == 0) {
 				throw new Exception("Invalid Property file");
 			}
-
 			// creating folder if not present
 			environmentFolder = "./test-output/" + applicationLevelProperty.get("Environment") + "/";
 			if (!new File(environmentFolder).exists())
 				new File(environmentFolder).mkdirs();
-			creatingReportFolder();
 		} catch (FileNotFoundException e) {
 			System.out.println("applicaiton level property file missing!");
 
@@ -101,9 +85,10 @@ public class Library {
 	 * this method lets you open webdriver, it slect webbrowser based on given value
 	 * in applicaiton.properties... it can open CHROME,EDGE,IE and FIREFOX browser
 	 */
-	public void initializeWebDriver() {
+	public synchronized WebDriver initializeWebDriver(String browserName) {
+		WebDriver driver = null;
 		try {
-			switch (applicationLevelProperty.get("Browser").toString().toUpperCase()) {
+			switch (browserName.toUpperCase()) {
 			case "CHROME":
 				WebDriverManager.chromedriver().setup();
 				driver = new ChromeDriver();
@@ -128,12 +113,13 @@ public class Library {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return driver;
 	}
 
 	/***
 	 * simple and sweet driver.quit to destroy running drivers :D
 	 */
-	public void destroyWebDriver() {
+	public void destroyWebDriver(WebDriver driver) {
 		if (driver != null)
 			driver.quit();
 	}
@@ -143,87 +129,10 @@ public class Library {
 	 * 
 	 * @param url url which user wishes to open
 	 */
-	public void openURL(String url) {
+	public void openURL(WebDriver driver, String url) {
 		driver.get(url);
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-	}
-
-	/**
-	 * this method creates reporting folder and initialize reporting variables
-	 */
-	public void creatingReportFolder() {
-		outputFolder = environmentFolder + (new File(environmentFolder).listFiles().length + 1) + "";
-		new File(outputFolder).mkdir();
-		System.setProperty("log", outputFolder);
-		// creating report
-		extentSparkReporter = new ExtentSparkReporter(outputFolder + "/index.html");
-		extentSparkReporter.config().setEncoding("utf-8");
-		extentSparkReporter.config().setDocumentTitle("Execution status");
-		extentSparkReporter.config().setReportName("Automation Tets Report");
-		extentSparkReporter.config().setTheme(Theme.DARK);
-
-		extentReports = new ExtentReports();
-		extentReports.setSystemInfo("Application Level Properties : ", "");
-		for (Object key : applicationLevelProperty.keySet())
-			extentReports.setSystemInfo(key.toString(), applicationLevelProperty.get(key).toString());
-		extentReports.setSystemInfo("Environment Level Properties : ", "");
-		for (Object key : environmentLevelProperty.keySet())
-			extentReports.setSystemInfo(key.toString(), environmentLevelProperty.get(key).toString());
-		extentReports.attachReporter(extentSparkReporter);
-	}
-
-	// below code is for specific tc reporting
-	/***
-	 * this method will create report for specific test initiation
-	 * 
-	 * @param className current we are using classname as test name sooon will
-	 *                  change
-	 */
-	public void startTestCaseReporting(String className) {
-		extentTest = extentReports.createTest(className);
-	}
-
-	/***
-	 * logging for info statements
-	 * 
-	 * @param stepDescription step description of log
-	 */
-	public void logResult(String stepDescription) {
-		extentTest.log(Status.INFO, stepDescription);
-	}
-
-	/***
-	 * this method lets code decides if this log statements should be considered as
-	 * pass/fail based on expected and actual value
-	 * 
-	 * @param StepDesciption description of log
-	 * @param expected       expected result
-	 * @param actual         actual result
-	 */
-	public void logResult(String StepDesciption, String expected, String actual) {
-		extentTest.log(expected.equalsIgnoreCase(actual) ? Status.PASS : Status.FAIL,
-				StepDesciption + " expected: " + expected + " & actual: " + actual);
-	}
-
-	/**
-	 * this methods lets user decide if log is pass/fail and pass that same status
-	 * as parameter in this method
-	 * 
-	 * @param StepDesciption description of step
-	 * @param expected       expected value
-	 * @param actual         actual value
-	 * @param status         status of log to be reported
-	 */
-	public void logResult(String StepDesciption, String expected, String actual, Status status) {
-		extentTest.log(status, StepDesciption + "\t || expected: " + expected + " & actual: " + actual);
-	}
-
-	/***
-	 * this methods lets extentReporter know that we can close reporting for test
-	 */
-	public void stopTestCaseReporting() {
-		extentReports.flush();
 	}
 
 	/***

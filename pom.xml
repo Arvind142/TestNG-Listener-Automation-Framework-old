@@ -4,8 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.personal</groupId>
 	<artifactId>TestNG_Framework</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-
+	<version>0.0.2-SNAPSHOT</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -53,13 +52,6 @@
 			<artifactId>testng</artifactId>
 			<version>7.3.0</version>
 			<scope>test</scope>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/com.aventstack/extentreports -->
-		<dependency>
-			<groupId>com.aventstack</groupId>
-			<artifactId>extentreports</artifactId>
-			<version>5.0.5</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.codoid.products/fillo -->
 		<dependency>

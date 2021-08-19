@@ -1,7 +1,5 @@
 package com.prac.util;
 
-import com.aventstack.extentreports.Status;
-
 /***
  * Constants class hold constants values it can be related to reporting, DB or
  * UI
@@ -11,11 +9,12 @@ import com.aventstack.extentreports.Status;
  */
 public class Constants {
 	public static class Reporting {
-		public static final Status PASS = Status.PASS;
-		public static final Status FAIL = Status.FAIL;
-		public static final Status INFO = Status.INFO;
-		public static final Status WARNING = Status.WARNING;
-		public static final Status SKIP = Status.SKIP;
+		public static final String PASS = "PASS";
+		public static final String FAIL = "FAIL";
+		public static final String INFO = "INFO";
+		public static final String WARNING = "WARNING";
+		public static final String SKIP = "SKIP";
+		public static final String seprator = ">>>>>>>>>>>>>>>>>>";
 	}
 
 	public static class WebLocator {
