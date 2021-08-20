@@ -27,8 +27,48 @@
 	integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
 	crossorigin="anonymous"></script>
 
+
+<!-- Pie chart -->
+
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+	// Load google charts
+	google.charts.load('current', {
+		'packages' : ['corechart']
+	});
+	google.charts.setOnLoadCallback(drawChart);
+
+	// Draw the chart and set the chart values
+	function drawChart() {
+		var data = google.visualization.arrayToDataTable([
+				['Execution status', 'case count'], ['Passed', {passed}], ['Failed', {failed}], ['Skipped', {skipped}]]);
+
+		// Optional; add a title and set the width and height of the chart
+		var options = {
+      title: 'Test Execution',
+      'width':500, 'height':200,
+      legend: { 
+        position: 'right', 
+        textStyle: { color: 'black', fontSize: 16 }
+      },
+      slices: {
+          0: { color: '#008000' },
+          1: { color: '#FF0000' },
+          2: { color: '#BDF516' }
+        }
+    };
+
+		// Display the chart inside the <div> element with id="piechart"
+		var chart = new google.visualization.PieChart(document
+				.getElementById('piechart'));
+		chart.draw(data, options);
+	}
+</script>
 </head>
 <body>
+
 	<!-- Header -->
 	<nav class="navbar navbar-dark bg-dark">
 		<a class="navbar-brand" href="#"> <img src="support/HeadIcon.png"
@@ -41,24 +81,49 @@
 	<div class="card">
 		<div class="card-header">Execution matrix</div>
 		<div class="card-body">
-			<table class="table table-striped" style="width: 500px">
-				<thead>
-					<tr>
-						<td scope="col">Total Cases</td>
-						<td scope="col">Passed Cases</td>
-						<td scope="col">Failed Cases</td>
-						<td scope="col">Skipped Cases</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>${totalCase}</td>
-						<td>${passed}</td>
-						<td>${failed}</td>
-						<td>${skipped}</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="container">
+				<div class="row">
+					<div class="col-sm" style="width: 200px">
+						<table class="table table-striped table-border table-hover">
+							<thead>
+								<tr>
+									<td scope="col">Start Time</td>
+									<td scope="col">End Time</td>
+									<td scope="col">Execution Time</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>{startTime}</td>
+									<td>{endTime}</td>
+									<td>{executionTime}</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="table table-striped table-border table-hover">
+							<thead>
+								<tr>
+									<td scope="col">Total Cases</td>
+									<td scope="col">Passed Cases</td>
+									<td scope="col">Failed Cases</td>
+									<td scope="col">Skipped Cases</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>{totalCase}</td>
+									<td>{passed}</td>
+									<td>{failed}</td>
+									<td>{skipped}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-sm" style="width: 200px">
+						<div id="piechart"></div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -66,9 +131,7 @@
 	<div class="row">
 		<div class="col-3">
 			<div class="nav flex-column nav-pills" id="v-pills-tab"
-				role="tablist" aria-orientation="vertical">
-				${testCaseLinks}
-			</div>
+				role="tablist" aria-orientation="vertical">{testCaseLinks}</div>
 		</div>
 		<div class="col-9">
 			<div class="tab-content" id="v-pills-tabContent">
@@ -76,9 +139,10 @@
 					<div class="alert alert-primary" role="alert">Pick any test
 						case from left panel to see results</div>
 				</div>
-				${testTables}
+				{testTables}
 			</div>
 		</div>
 	</div>
+	
 </body>
 </html>

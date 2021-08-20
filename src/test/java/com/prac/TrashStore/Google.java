@@ -1,5 +1,9 @@
 package com.prac.TrashStore;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.openqa.selenium.WebDriver;
 import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
@@ -10,27 +14,24 @@ import com.prac.util.TestNGBase;
 
 public class Google extends TestNGBase {
 
-	String className = this.getClass().getSimpleName();
 	WebDriver driver = null;
 
 	@DataProvider(name = "dataProvider")
 	public Object[][] dataProvider() {
-		return businessFunction.getDataFromExcel(className);
+		return businessFunction.getDataFromExcel("Google");
 	}
 
 	@Test(dataProvider = "dataProvider")
-	public void f(@Optional(value = "TC00X") String TCName, Object[] testData) {
+	public void withExcelPram(Object[] testData) {
 		// few reporting must
-
+		String testName = className + "." + (new Object() {
+		}.getClass().getEnclosingMethod().getName()) + "." + testData[0];
 		try {
-//			driver = businessFunction.initializeWebDriver("EDGE");
-			log(className + "_" + TCName, "VAL1", "Browser started");
-//			businessFunction.openURL(driver, businessFunction.environmentLevelProperty.getProperty("googleURL"));
-			System.out.println("Navigation success!!!");
-			log(className + "_" + TCName, "Navigation", "Successs Expected", "Success found", Constants.Reporting.PASS);
-//			businessFunction.destroyWebDriver(driver);
+			log(testName, "VAL1", "Browser started");
+			Thread.sleep(15000);
+			log(testName, "Navigation", "Successs Expected", "Success found", Constants.Reporting.PASS);
 		} catch (Exception e) {
-			log(className + "_" + TCName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
+			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
 					Constants.Reporting.FAIL);
 		}
 	}
@@ -42,52 +43,43 @@ public class Google extends TestNGBase {
 	}
 
 	@Test(dataProvider = "dataProvider1")
-	public void f1(String...args) {
+	public void withDataProviderPram(Object... args) {
 		// few reporting must
+		String testName = className + "." + (new Object() {
+		}.getClass().getEnclosingMethod().getName()) + "." + args[0];
 		try {
-			log(className + "_" + args[0], "VAL1", "INFO-LOG");
-			log(className + "_" + args[0], "VAL2", "B", "B");
-			log(className + "_" + args[0], "VAL3", "A", "A", Constants.Reporting.PASS);
-			log(className + "_" + args[0], "VAL4", "C", "D", Constants.Reporting.FAIL, "https://www.google.com");
+			log(testName, "VAL1", "INFO-LOG");
+			Thread.sleep(5000);
+			log(testName, "VAL2", "B", "B");
+			log(testName, "VAL3", "A", "A", Constants.Reporting.PASS);
+			log(testName, "VAL4", "C", "D", Constants.Reporting.PASS, "https://www.google.com");
 		} catch (SkipException e) {
-			log(className + "_" + args[0], "Skip Exception", "", "", Constants.Reporting.SKIP);
+			log(testName, "Skip Exception", "", "", Constants.Reporting.SKIP);
 		} catch (Exception e) {
-			log(className + "_" + args[0], "Error found", "No exception expected", "exception found: " + e.getMessage(),
+			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
 					Constants.Reporting.FAIL);
 		}
 	}
 
 	@Test
-	public void f2(@Optional(value = "TC00Y") String TCName) {
-		// few reporting must
-		try {
-			log(className + "_" + TCName, "VAL1", "INFO-LOG");
-			log(className + "_" + TCName, "VAL2", "B", "B");
-			log(className + "_" + TCName, "VAL3", "A", "A", Constants.Reporting.PASS);
-			log(className + "_" + TCName, "VAL4", "C", "D", Constants.Reporting.FAIL, "https://www.google.com");
-		} catch (SkipException e) {
-			log(className + "_" + TCName, "Skip Exception", "", "", Constants.Reporting.SKIP);
-		} catch (Exception e) {
-			log(className + "_" + TCName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
-					Constants.Reporting.FAIL);
-		}
-	}
-
-	@Test
-	public void f3(@Optional(value = "TC00Z") String TCName) throws Exception {
+	public void invalidCaseWithSkip() {
+		String testName = className + "." + (new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		// few reporting must
 		throw new SkipException("Test Case to be skipped");
 	}
 
 	@Test
-	public void f4(@Optional(value = "TC00A") String TCName) {
+	public void testWithoutPram() {
 		// few reporting must
+		String testName = className + "." + (new Object() {
+		}.getClass().getEnclosingMethod().getName());
 		try {
 			throw new Exception("Some Error");
 		} catch (SkipException e) {
-			log(className + "_" + TCName, "Skip Exception", "", "", Constants.Reporting.SKIP);
+			log(testName, "Skip Exception", "", "", Constants.Reporting.SKIP);
 		} catch (Exception e) {
-			log(className + "_" + TCName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
+			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
 					Constants.Reporting.FAIL);
 		}
 	}

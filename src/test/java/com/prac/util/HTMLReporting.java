@@ -3,6 +3,7 @@ package com.prac.util;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.testng.ITestContext;
@@ -11,15 +12,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 
 public class HTMLReporting {
 	HashMap<String, List<String>> testResults = null;
 	String baseHtmlPath = "./HTMLReportFormat/Index.html";
 	String baseHtmlFolder = "./HTMLReportFormat/";
 	String baseCssFolder = "./HTMLReportFormat/css/";
+	// ui date format
+	SimpleDateFormat uidateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
 	// reporting
-	String testLinks = "<a class=\"nav-link\" id=\"v-pills-${testCaseName}-tab\" data-toggle=\"pill\"	href=\"#v-pills-${testCaseName}\" role=\"tab\" aria-controls=\"v-pills-${testCaseName}\" aria-selected=\"true\">${testCaseName}</a>";
+	String testLinks = "<a class=\"nav-link\" id=\"v-pills-{testCaseName}-tab\" data-toggle=\"pill\"	href=\"#v-pills-{testCaseName}\" role=\"tab\" aria-controls=\"v-pills-{testCaseName}\" aria-selected=\"true\">{testCaseName}</a>";
 
 	// properties
 	Properties applicationLevelProperty = new Properties();
@@ -78,6 +82,7 @@ public class HTMLReporting {
 			if (!environmentFolder.exists()) {
 				environmentFolder.mkdirs();
 			}
+			// ::::here we create new reportign folder
 			reportFolder = new File(
 					environmentFolder.getAbsolutePath() + "/" + (environmentFolder.listFiles().length + 1));
 			if (!reportFolder.exists()) {
@@ -103,15 +108,38 @@ public class HTMLReporting {
 			String reportString = new String(data, "UTF-8");
 
 			// updating status matrix
-			reportString = reportString.replace("${totalCase}", String.valueOf((context.getPassedTests().size()
+			reportString = reportString.replace("{totalCase}", String.valueOf((context.getPassedTests().size()
 					+ context.getFailedTests().size() + context.getSkippedTests().size())));
-			reportString = reportString.replace("${passed}", String.valueOf(context.getPassedTests().size()));
-			reportString = reportString.replace("${failed}", String.valueOf(context.getFailedTests().size()));
-			reportString = reportString.replace("${skipped}", String.valueOf(context.getSkippedTests().size()));
+			reportString = reportString.replace("{passed}", String.valueOf(context.getPassedTests().size()));
+			reportString = reportString.replace("{failed}", String.valueOf(context.getFailedTests().size()));
+			reportString = reportString.replace("{skipped}", String.valueOf(context.getSkippedTests().size()));
+
+			// updating executionTime
+			reportString = reportString.replace("{startTime}",
+					uidateFormat.format(ListenerClass.suiteTimeStamps.get("suiteStartTime")));
+			reportString = reportString.replace("{endTime}",
+					uidateFormat.format(ListenerClass.suiteTimeStamps.get("suiteEndTime")));
+			long diffInMillies = Math.abs(ListenerClass.suiteTimeStamps.get("suiteEndTime").getTime()
+					- ListenerClass.suiteTimeStamps.get("suiteStartTime").getTime());
+			long hours = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+			long minutes = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
+			long seconds = TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+			if (hours != 0) {
+				reportString = reportString.replace("{executionTime}", String.valueOf(hours) + " h:"
+						+ String.valueOf(minutes) + " m:" + String.valueOf(seconds) + " s");
+			} else {
+				if (minutes != 0) {
+					reportString = reportString.replace("{executionTime}",
+							String.valueOf(minutes) + " m:" + String.valueOf(seconds) + " s");
+				} else {
+					reportString = reportString.replace("{executionTime}", String.valueOf(seconds) + "s");
+				}
+			}
 
 			// adding test cases hyperlink
-			reportString = reportString.replace("${testCaseLinks}", getAllTestCasesLink(testLinks));
-			reportString = reportString.replace("${testTables}", getAllTestTables());
+			reportString = reportString.replace("{testCaseLinks}", getAllTestCasesLink(testLinks));
+			reportString = reportString.replace("{testTables}", getAllTestTables());
+
 			// writing html
 			FileOutputStream out = new FileOutputStream(file);
 			data = reportString.getBytes("UTF-8");
@@ -132,8 +160,8 @@ public class HTMLReporting {
 	 */
 	public String getAllTestCasesLink(String linkFormat) {
 		String testCaseLinks = "";
-		for (String key : ResultLogClass.testResultMap.keySet()) {
-			testCaseLinks += (linkFormat.replace("${testCaseName}", key));
+		for (String key : ListenerClass.testResultMap.keySet()) {
+			testCaseLinks += (linkFormat.replace("{testCaseName}", key.replace(".", "_")));
 		}
 		return testCaseLinks;
 	}
@@ -145,21 +173,43 @@ public class HTMLReporting {
 	 * @return
 	 */
 	public String getAllTestTables() {
-		String upperFormat = "<div class=\"tab-pane fade show\"\r\n" + "     id=\"v-pills-${testCaseName}\"\r\n"
-				+ "     role=\"tabpanel\"\r\n" + "     aria-labelledby=\"v-pills-${testCaseName}-tab\">\r\n"
-				+ "	<table class=\"table table-striped\">\r\n" + "		<thead>\r\n" + "			<tr>\r\n"
-				+ "				<th scope=\"col\">#</th>\r\n" + "				<th scope=\"col\">Step</th>\r\n"
-				+ "				<th scope=\"col\">Expected</th>\r\n"
+		;
+		String upperFormat = "<div class=\"tab-pane fade show\"\r\n" + "     id=\"v-pills-{testCaseName}\"\r\n"
+				+ "     role=\"tabpanel\"\r\n" + "     aria-labelledby=\"v-pills-{testCaseName}-tab\">\r\n"
+				+ "<div class=\"alert alert-primary\" role=\"alert\">\r\n"
+				+ "  start time: {startTime} - end time: {endTime}\r\n" + "</div>"
+				+ "	<table class=\"table table-striped table-border table-hover\">\r\n" + "		<thead>\r\n"
+				+ "			<tr>\r\n" + "				<th scope=\"col\">#</th>\r\n"
+				+ "				<th scope=\"col\">Step</th>\r\n" + "				<th scope=\"col\">Expected</th>\r\n"
 				+ "				<th scope=\"col\">Actual</th>\r\n" + "				<th scope=\"col\">Status</th>\r\n"
-				+ "				<th scope=\"col\">Evidence</th>\r\n" + "			</tr>\r\n" + "		</thead>\r\n"
-				+ "		<tbody>";
+				+ "				<th scope=\"col\">Evidence</th> <th scope=\"col\">TimeStamp</th>\r\n"
+				+ "			</tr>\r\n" + "		</thead>\r\n" + "		<tbody>";
 		String belowFormat = "</tbody>\r\n" + "	</table>\r\n" + "</div>";
 		String testCaseLinks = "";
-		for (String key : ResultLogClass.testResultMap.keySet()) {
-			testCaseLinks += (upperFormat.replace("${testCaseName}", key)
-					+ getRowsCreated(ResultLogClass.testResultMap.get(key)) + belowFormat);
+		for (String key : ListenerClass.testResultMap.keySet()) {
+			testCaseLinks += (upperFormat.replace("{testCaseName}", key.replace(".", "_")).replace(
+					"start time: {startTime} - end time: {endTime}",
+					testDateUpdate(key, "start time: {startTime} - end time: {endTime}"))
+					+ getRowsCreated(ListenerClass.testResultMap.get(key)) + belowFormat);
 		}
 		return testCaseLinks;
+	}
+
+	/**
+	 * update time of Testcase in upperPortion of div
+	 * 
+	 * @param key
+	 * @param str
+	 * @return
+	 */
+	public String testDateUpdate(String key, String str) {
+		for (String tc : ListenerClass.testTimeStamps.keySet()) {
+			if (tc.endsWith(key)) {
+				str = str.replace("{startTime}", uidateFormat.format(ListenerClass.testTimeStamps.get(tc).get(0)));
+				str = str.replace("{endTime}", uidateFormat.format(ListenerClass.testTimeStamps.get(tc).get(1)));
+			}
+		}
+		return str;
 	}
 
 	/***
@@ -168,26 +218,23 @@ public class HTMLReporting {
 	 * @return
 	 */
 	public String getRowsCreated(List<String> log) {
-		String rowFormat = "<tr><td>${stepNo}</td><td>${stepName}</td><td>${expected}</td><td>${actual}</td><td>${status}</td><td><a href=\"${link}\" >ClickHere!</a></td></tr>";
+		String rowFormat = "<tr><td>${stepNo}</td><td>${stepName}</td><td>${expected}</td><td>${actual}</td><td>${status}</td><td><a href=\"${link}\" target=\"_blank\">ClickHere!</a></td><td>${timestamp}</td></tr>";
 		String rows = "", row = "";
 		int counter = 1;
 		for (String record : log) {
 			row = "";
 			String[] content = record.split(Constants.Reporting.seprator);
-			switch (content.length) {
-			case 5:
+			if (content[4].equals("[]")) {
 				row = (rowFormat.replace("${stepNo}", String.valueOf(counter))).replace("${stepName}", content[0])
 						.replace("${expected}", content[1]).replace("${actual}", content[2])
-						.replace("${status}", content[3]).replace("${link}", content[4]);
-				break;
-			case 4:
+						.replace("${status}", content[3])
+						.replace("<a href=\"${link}\" target=\"_blank\">ClickHere!</a>", "")
+						.replace("${timestamp}", content[5]);
+			} else {
 				row = (rowFormat.replace("${stepNo}", String.valueOf(counter))).replace("${stepName}", content[0])
 						.replace("${expected}", content[1]).replace("${actual}", content[2])
-						.replace("${status}", content[3]).replace("<a href=\"${link}\" >ClickHere!</a>", "");
-				break;
-
-			default:
-				break;
+						.replace("${status}", content[3]).replace("${link}", content[4])
+						.replace("${timestamp}", content[5]);
 			}
 			rows += row;
 			counter++;
