@@ -1,6 +1,6 @@
 package com.prac.main;
 
-import com.prac.util.Library;
+import com.prac.framework.util.Library;
 
 /***
  * BusinessFunction class would hold re-usable methods. There is no restriction

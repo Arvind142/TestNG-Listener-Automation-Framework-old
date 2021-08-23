@@ -1,4 +1,4 @@
-package com.prac.util;
+package com.prac.framework.util;
 
 import com.prac.main.BusinessFunction;
 import static org.testng.Assert.assertEquals;
@@ -16,8 +16,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 /***
- * BaseClass class consist of few methods calls required for framework to be
- * initialized
+ * class consist of few methods calls required for framework to be initialized
  * 
  * @author arvin
  *
@@ -32,7 +31,7 @@ public class TestNGBase {
 	public String className = "";
 	public String testName = "";
 
-	// formating time
+	// formating date
 	SimpleDateFormat reportUiDateFormat = ListenerClass.reportUiDateFormat;
 
 	/***
@@ -71,9 +70,11 @@ public class TestNGBase {
 	}
 
 	/***
-	 * format logs
+	 * log info statements
 	 * 
-	 * @return
+	 * @param className expects tc identifier
+	 * @param steps     steps for info
+	 * @param details   details on info statement
 	 */
 	public synchronized void log(String className, String steps, String details) {
 		String log = "";
@@ -83,6 +84,14 @@ public class TestNGBase {
 		addLogToMap(className, log);
 	}
 
+	/***
+	 * used for logging purpose where code decides on pass/fail
+	 * 
+	 * @param className tc identifier
+	 * @param steps     step description
+	 * @param expected  expected value
+	 * @param actual    actual value
+	 */
 	public synchronized void log(String className, String steps, String expected, String actual) {
 		String log = "";
 		log = steps + Constants.Reporting.seprator + expected + Constants.Reporting.seprator + actual
@@ -94,6 +103,15 @@ public class TestNGBase {
 		assertEquals(expected, actual);
 	}
 
+	/***
+	 * log to report check point with statement status as given by user
+	 * 
+	 * @param className tc identifier
+	 * @param steps     step description
+	 * @param expected  expected value
+	 * @param actual    actual value
+	 * @param status    Pass/Fail/Info/Skip
+	 */
 	public synchronized void log(String className, String steps, String expected, String actual, String status) {
 		String log = "";
 		log = steps + Constants.Reporting.seprator + expected + Constants.Reporting.seprator + actual
@@ -105,6 +123,16 @@ public class TestNGBase {
 		}
 	}
 
+	/***
+	 * log to report check point with statement status as given by user
+	 * 
+	 * @param className  tc identifier
+	 * @param steps      step description
+	 * @param expected   expected value
+	 * @param actual     actual value
+	 * @param status     Pass/Fail/Info/Skip
+	 * @param attachmant attachment path
+	 */
 	public synchronized void log(String className, String steps, String expected, String actual, String status,
 			String attachmant) {
 		String log = "";
@@ -117,6 +145,14 @@ public class TestNGBase {
 		}
 	}
 
+	/**
+	 * add test level logs to classLevel log variable
+	 * 
+	 * 
+	 * @param className expects classname - which is methodname/methodname + first
+	 *                  parameter name
+	 * @param log       expects logs statement in string format
+	 */
 	public synchronized void addLogToMap(String className, String log) {
 		if (classLevel.containsKey(className)) {
 			// already exist

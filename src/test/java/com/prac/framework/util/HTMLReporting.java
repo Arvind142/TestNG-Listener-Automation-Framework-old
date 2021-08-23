@@ -1,4 +1,4 @@
-package com.prac.util;
+package com.prac.framework.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -11,8 +11,9 @@ import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Test;
-import com.prac.util.Constants;
-import com.prac.util.TestNGBase;
+
+import com.prac.framework.util.Constants;
+import com.prac.framework.util.TestNGBase;
 
 public class FlowClass extends TestNGBase {
 

@@ -1,4 +1,4 @@
-package com.prac.util;
+package com.prac.framework.util;
 
 import java.util.List;
 import java.io.File;
@@ -81,59 +81,6 @@ public class Library {
 		}
 	}
 
-	/***
-	 * this method lets you open webdriver, it slect webbrowser based on given value
-	 * in applicaiton.properties... it can open CHROME,EDGE,IE and FIREFOX browser
-	 */
-	public synchronized WebDriver initializeWebDriver(String browserName) {
-		WebDriver driver = null;
-		try {
-			switch (browserName.toUpperCase()) {
-			case "CHROME":
-				WebDriverManager.chromedriver().setup();
-				driver = new ChromeDriver();
-				break;
-			case "EDGE":
-			case "MSEDGE":
-				WebDriverManager.edgedriver().setup();
-				driver = new EdgeDriver();
-				break;
-			case "FIREFOX":
-				WebDriverManager.firefoxdriver().setup();
-				driver = new FirefoxDriver();
-				break;
-			case "IE":
-			case "INTERNETEXPLORER":
-				WebDriverManager.iedriver().setup();
-				driver = new InternetExplorerDriver();
-				break;
-			default:
-				throw new Exception("Invalid BrowserName");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return driver;
-	}
-
-	/***
-	 * simple and sweet driver.quit to destroy running drivers :D
-	 */
-	public void destroyWebDriver(WebDriver driver) {
-		if (driver != null)
-			driver.quit();
-	}
-
-	/**
-	 * this method lets you open url whihc is passed as parameter
-	 * 
-	 * @param url url which user wishes to open
-	 */
-	public void openURL(WebDriver driver, String url) {
-		driver.get(url);
-		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-	}
 
 	/***
 	 * getDataFromExcel retrieve testdata from excel and return it in Object[][]
@@ -169,26 +116,6 @@ public class Library {
 			e.printStackTrace();
 		}
 		return excelData;
-	}
-
-	/***
-	 * getMySQLDBConnection method can be used to get connection established to
-	 * mySQL DB
-	 * 
-	 * @param host     dbhost
-	 * @param username dbusername
-	 * @param password dbpassword
-	 * @return return connection of java.sql.connection type when connection is
-	 *         successful or else null
-	 */
-	public Connection getMySqlDBConnection(String host, String username, String password) {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			return DriverManager.getConnection("jdbc:mysql://" + host, username, password);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 }

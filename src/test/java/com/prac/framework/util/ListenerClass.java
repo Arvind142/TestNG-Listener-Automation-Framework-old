@@ -1,20 +1,28 @@
-package com.prac.util;
+package com.prac.framework.util;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * backbone of framework with all listeners to perform some set of operations
+ * based on need
+ * 
+ * @author arvin
+ *
+ */
 public class ListenerClass implements ITestListener {
 
 	// stores test results
@@ -32,7 +40,34 @@ public class ListenerClass implements ITestListener {
 	// formating time
 	public static SimpleDateFormat reportUiDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
 
-	public ListenerClass() {
+	// logger
+	// getting class name at runtime
+	private static final String className = ListenerClass.class.getName();
+
+	// logger initialized with MC
+	public static final Logger logger = Logger.getLogger(className);
+
+	// handlers i.e. file and console
+	private static Handler consoleHandler = null, fileHandler = null;
+
+	public ListenerClass() throws Exception {
+		// turning off parent handler i.e. consoleHandler
+		logger.setUseParentHandlers(false);
+
+		// creating ConsoleHandler and setting level
+		consoleHandler = new ConsoleHandler();
+		consoleHandler.setLevel(Level.ALL);
+
+		// creating FileHandler and setting level
+		fileHandler = new FileHandler("src/test/resource/" + className + ".log");
+		fileHandler.setLevel(Level.ALL);
+
+		// Adding handlers
+		logger.addHandler(consoleHandler);
+		logger.addHandler(fileHandler);
+		
+		logger.setLevel(Level.ALL);
+
 	}
 
 	@Override
@@ -78,6 +113,7 @@ public class ListenerClass implements ITestListener {
 	@Override
 	public void onStart(ITestContext context) {
 		suiteTimeStamps.put("suiteStartTime", Calendar.getInstance().getTime());
+		logger.log(Level.INFO, "Suite execution started");
 	}
 
 	@Override
@@ -95,6 +131,9 @@ public class ListenerClass implements ITestListener {
 		report.createReport(context);
 
 		// email report
+		
+		
+		logger.log(Level.INFO, "Suite execution stopped");
 
 	}
 

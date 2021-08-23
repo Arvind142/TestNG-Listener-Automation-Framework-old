@@ -1,4 +1,4 @@
-package com.prac.util;
+package com.prac.framework.util;
 
 /***
  * Constants class hold constants values it can be related to reporting, DB or
