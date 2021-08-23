@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Suite" thread-count="10" parallel="methods" >
+<suite name="Suite" thread-count="12" parallel="methods">
+	<!-- thread-count="10" parallel="methods" -->
 	<!-- Listeners to help with reporting -->
 	<listeners>
 		<listener class-name="com.prac.util.ListenerClass"></listener>
 	</listeners>
-	<test thread-count="5" name="Test">
+	<test name="Test">
 		<classes>
-			<class name="com.prac.TrashStore.Google" />
+			<class name="com.prac.TrashStore.FlowClass" />
 		</classes>
 	</test> <!-- Test -->
 </suite> <!-- Suite -->

@@ -1,5 +1,6 @@
 package com.prac.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -23,7 +24,7 @@ public class HTMLReporting {
 	SimpleDateFormat uidateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
 	// reporting
-	String testLinks = "<a class=\"nav-link\" id=\"v-pills-{testCaseName}-tab\" data-toggle=\"pill\"	href=\"#v-pills-{testCaseName}\" role=\"tab\" aria-controls=\"v-pills-{testCaseName}\" aria-selected=\"true\">{testCaseName}</a>";
+	String testLinks = "<a class=\"nav-link \" id=\"v-pills-{testCaseName}-tab\" data-toggle=\"pill\" style=\" color:#000; width:100% \"	href=\"#v-pills-{testCaseName}\" role=\"tab\" aria-controls=\"v-pills-{testCaseName}\" aria-selected=\"true\"><button type=\"button\" class=\"btn btn-{status}\"> </button>&nbsp;{testCaseName}</a>";
 
 	// properties
 	Properties applicationLevelProperty = new Properties();
@@ -82,7 +83,7 @@ public class HTMLReporting {
 			if (!environmentFolder.exists()) {
 				environmentFolder.mkdirs();
 			}
-			// ::::here we create new reportign folder
+			// ::::here we create new reporting folder
 			reportFolder = new File(
 					environmentFolder.getAbsolutePath() + "/" + (environmentFolder.listFiles().length + 1));
 			if (!reportFolder.exists()) {
@@ -161,9 +162,54 @@ public class HTMLReporting {
 	public String getAllTestCasesLink(String linkFormat) {
 		String testCaseLinks = "";
 		for (String key : ListenerClass.testResultMap.keySet()) {
-			testCaseLinks += (linkFormat.replace("{testCaseName}", key.replace(".", "_")));
+			testCaseLinks += updateHyperLinkeColorPas_fail(linkFormat, key);
 		}
 		return testCaseLinks;
+	}
+
+	/***
+	 * add tcName, add color
+	 * 
+	 * @param link
+	 * @return
+	 */
+	public String updateHyperLinkeColorPas_fail(String link, String key) {
+		// tcName updated
+		link = (link.replace("{testCaseName}", key.replace(".", "_")));
+		// color based on test Status
+		for (String resultKey : ListenerClass.testResultMap.keySet()) {
+			if (resultKey.endsWith(key)) {
+				// getting status
+				List<String> logs = ListenerClass.testResultMap.get(resultKey);
+				switch (getTestCaseStatus(logs)) {
+				case "success":
+					link = link.replace("{status}", "success");
+					break;
+				case "danger":
+					link = link.replace("{status}", "danger");
+					break;
+				case "warning":
+					link = link.replace("{status}", "warning");
+					break;
+				default:
+					link = link.replace("{status}", "danger");
+					break;
+				}
+				break;
+			}
+		}
+		return link;
+	}
+
+	public String getTestCaseStatus(List<String> logs) {
+		for (String log : logs) {
+			if (log.split(Constants.Reporting.seprator)[3].equals(Constants.Reporting.FAIL)) {
+				return "danger";
+			} else if (log.split(Constants.Reporting.seprator)[3].equals(Constants.Reporting.SKIP)) {
+				return "warning";
+			}
+		}
+		return "success";
 	}
 
 	/***
@@ -217,11 +263,11 @@ public class HTMLReporting {
 	 * 
 	 * @return
 	 */
-	public String getRowsCreated(List<String> log) {
+	public String getRowsCreated(List<String> logs) {
 		String rowFormat = "<tr><td>${stepNo}</td><td>${stepName}</td><td>${expected}</td><td>${actual}</td><td>${status}</td><td><a href=\"${link}\" target=\"_blank\">ClickHere!</a></td><td>${timestamp}</td></tr>";
 		String rows = "", row = "";
 		int counter = 1;
-		for (String record : log) {
+		for (String record : logs) {
 			row = "";
 			String[] content = record.split(Constants.Reporting.seprator);
 			if (content[4].equals("[]")) {

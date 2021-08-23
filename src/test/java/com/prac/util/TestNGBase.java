@@ -33,7 +33,7 @@ public class TestNGBase {
 	public String testName = "";
 
 	// formating time
-	SimpleDateFormat reportUiDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
+	SimpleDateFormat reportUiDateFormat = ListenerClass.reportUiDateFormat;
 
 	/***
 	 * below method is to initialize required framework level variable for easier
@@ -51,9 +51,23 @@ public class TestNGBase {
 	public void afterClass() {
 		// updating log in core reporting
 		for (String key : classLevel.keySet()) {
-			ListenerClass.testResultMap.put(key, classLevel.get(key));
+			// if key already exist for given case
+			if (ListenerClass.testResultMap.containsKey(key)) {
+				// below code is extremely important because of timeout/SKIP case
+				// getting classLevel logs
+				testLevel = new ArrayList<String>();
+				testLevel = classLevel.get(key);
+				// getting suite level logs
+				List<String> tempList = ListenerClass.testResultMap.get(key);
+				// appending suite level log into classLevel
+				for (String log : tempList) {
+					testLevel.add(log);
+				}
+				ListenerClass.testResultMap.replace(key, testLevel);
+			} else {
+				ListenerClass.testResultMap.put(key, classLevel.get(key));
+			}
 		}
-		System.out.println("we can check here");
 	}
 
 	/***
