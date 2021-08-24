@@ -23,8 +23,9 @@ import org.testng.annotations.BeforeMethod;
  */
 public class TestNGBase {
 	/** reporting vars **/
-	private Map<String, List<String>> classLevel = null;
-	private List<String> testLevel = null;
+	private Map<String, List<Test>> classLevel = null;
+	private List<Test> testLevel = null;
+	private Test log = null;
 	protected BusinessFunction businessFunction = new BusinessFunction();
 
 	// used for testCase logging
@@ -42,7 +43,7 @@ public class TestNGBase {
 	public void beforeClass() {
 		businessFunction.readApplicaitonLevelProperty();
 		businessFunction.readEnvironmentLevelProperty();
-		classLevel = new ConcurrentHashMap<String, List<String>>();
+		classLevel = new ConcurrentHashMap<String, List<Test>>();
 		className = this.getClass().getSimpleName();
 	}
 
@@ -54,12 +55,12 @@ public class TestNGBase {
 			if (ListenerClass.testResultMap.containsKey(key)) {
 				// below code is extremely important because of timeout/SKIP case
 				// getting classLevel logs
-				testLevel = new ArrayList<String>();
+				testLevel = new ArrayList<Test>();
 				testLevel = classLevel.get(key);
 				// getting suite level logs
-				List<String> tempList = ListenerClass.testResultMap.get(key);
+				List<Test> tempList = ListenerClass.testResultMap.get(key);
 				// appending suite level log into classLevel
-				for (String log : tempList) {
+				for (Test log : tempList) {
 					testLevel.add(log);
 				}
 				ListenerClass.testResultMap.replace(key, testLevel);
@@ -77,10 +78,7 @@ public class TestNGBase {
 	 * @param details   details on info statement
 	 */
 	public synchronized void log(String className, String steps, String details) {
-		String log = "";
-		log = steps + Constants.Reporting.seprator + details + Constants.Reporting.seprator + ""
-				+ Constants.Reporting.seprator + Constants.Reporting.INFO + Constants.Reporting.seprator + "[]"
-				+ Constants.Reporting.seprator + reportUiDateFormat.format(Calendar.getInstance().getTime());
+		log = Test.logInfo(steps, details);
 		addLogToMap(className, log);
 	}
 
@@ -93,12 +91,7 @@ public class TestNGBase {
 	 * @param actual    actual value
 	 */
 	public synchronized void log(String className, String steps, String expected, String actual) {
-		String log = "";
-		log = steps + Constants.Reporting.seprator + expected + Constants.Reporting.seprator + actual
-				+ Constants.Reporting.seprator
-				+ (expected.equals(actual) ? Constants.Reporting.PASS : Constants.Reporting.FAIL)
-				+ Constants.Reporting.seprator + "[]" + Constants.Reporting.seprator
-				+ reportUiDateFormat.format(Calendar.getInstance().getTime());
+		log = Test.log(steps, expected, actual);
 		addLogToMap(className, log);
 		assertEquals(expected, actual);
 	}
@@ -113,10 +106,7 @@ public class TestNGBase {
 	 * @param status    Pass/Fail/Info/Skip
 	 */
 	public synchronized void log(String className, String steps, String expected, String actual, String status) {
-		String log = "";
-		log = steps + Constants.Reporting.seprator + expected + Constants.Reporting.seprator + actual
-				+ Constants.Reporting.seprator + status + Constants.Reporting.seprator + "[]"
-				+ Constants.Reporting.seprator + reportUiDateFormat.format(Calendar.getInstance().getTime());
+		log = Test.log(steps, expected, actual, status);
 		addLogToMap(className, log);
 		if (status.equals(Constants.Reporting.FAIL)) {
 			assertEquals(expected, actual);
@@ -135,10 +125,7 @@ public class TestNGBase {
 	 */
 	public synchronized void log(String className, String steps, String expected, String actual, String status,
 			String attachmant) {
-		String log = "";
-		log = steps + Constants.Reporting.seprator + expected + Constants.Reporting.seprator + actual
-				+ Constants.Reporting.seprator + status + Constants.Reporting.seprator + attachmant
-				+ Constants.Reporting.seprator + reportUiDateFormat.format(Calendar.getInstance().getTime());
+		log = Test.log(steps, expected, actual, status, attachmant);
 		addLogToMap(className, log);
 		if (status.equals(Constants.Reporting.FAIL)) {
 			assertEquals(expected, actual);
@@ -153,7 +140,7 @@ public class TestNGBase {
 	 *                  parameter name
 	 * @param log       expects logs statement in string format
 	 */
-	public synchronized void addLogToMap(String className, String log) {
+	public synchronized void addLogToMap(String className, Test log) {
 		if (classLevel.containsKey(className)) {
 			// already exist
 			if (classLevel.get(className) != null) {
@@ -161,14 +148,14 @@ public class TestNGBase {
 				testLevel = classLevel.get(className);
 			} else {
 				// creating new list
-				testLevel = new ArrayList<String>();
+				testLevel = new ArrayList<Test>();
 			}
 			// adding log and updating map
 			testLevel.add(log);
 			classLevel.replace(className, testLevel);
 		} else {
 			// creating list and updating it in map
-			testLevel = new ArrayList<String>();
+			testLevel = new ArrayList<Test>();
 			testLevel.add(log);
 			classLevel.put(className, testLevel);
 		}

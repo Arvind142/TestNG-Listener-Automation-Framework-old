@@ -180,7 +180,7 @@ public class HTMLReporting {
 		for (String resultKey : ListenerClass.testResultMap.keySet()) {
 			if (resultKey.endsWith(key)) {
 				// getting status
-				List<String> logs = ListenerClass.testResultMap.get(resultKey);
+				List<Test> logs = ListenerClass.testResultMap.get(resultKey);
 				switch (getTestCaseStatus(logs)) {
 				case "success":
 					link = link.replace("{status}", "success");
@@ -201,11 +201,11 @@ public class HTMLReporting {
 		return link;
 	}
 
-	public String getTestCaseStatus(List<String> logs) {
-		for (String log : logs) {
-			if (log.split(Constants.Reporting.seprator)[3].equals(Constants.Reporting.FAIL)) {
+	public String getTestCaseStatus(List<Test> logs) {
+		for (Test log : logs) {
+			if (log.getLogStatus().equals(Constants.Reporting.FAIL)) {
 				return "danger";
-			} else if (log.split(Constants.Reporting.seprator)[3].equals(Constants.Reporting.SKIP)) {
+			} else if (log.getLogStatus().equals(Constants.Reporting.SKIP)) {
 				return "warning";
 			}
 		}
@@ -263,24 +263,23 @@ public class HTMLReporting {
 	 * 
 	 * @return
 	 */
-	public String getRowsCreated(List<String> logs) {
+	public String getRowsCreated(List<Test> logs) {
 		String rowFormat = "<tr><td>${stepNo}</td><td>${stepName}</td><td>${expected}</td><td>${actual}</td><td>${status}</td><td><a href=\"${link}\" target=\"_blank\">ClickHere!</a></td><td>${timestamp}</td></tr>";
 		String rows = "", row = "";
 		int counter = 1;
-		for (String record : logs) {
+		for (Test log : logs) {
 			row = "";
-			String[] content = record.split(Constants.Reporting.seprator);
-			if (content[4].equals("[]")) {
-				row = (rowFormat.replace("${stepNo}", String.valueOf(counter))).replace("${stepName}", content[0])
-						.replace("${expected}", content[1]).replace("${actual}", content[2])
-						.replace("${status}", content[3])
+			if (log.getAttachment() == null) {
+				row = (rowFormat.replace("${stepNo}", String.valueOf(counter)))
+						.replace("${stepName}", log.getStepDescription()).replace("${expected}", log.getExpectedValue())
+						.replace("${actual}", log.getActualValue()).replace("${status}", log.getLogStatus())
 						.replace("<a href=\"${link}\" target=\"_blank\">ClickHere!</a>", "")
-						.replace("${timestamp}", content[5]);
+						.replace("${timestamp}", log.getEvidenceTime());
 			} else {
-				row = (rowFormat.replace("${stepNo}", String.valueOf(counter))).replace("${stepName}", content[0])
-						.replace("${expected}", content[1]).replace("${actual}", content[2])
-						.replace("${status}", content[3]).replace("${link}", content[4])
-						.replace("${timestamp}", content[5]);
+				row = (rowFormat.replace("${stepNo}", String.valueOf(counter)))
+						.replace("${stepName}", log.getStepDescription()).replace("${expected}", log.getExpectedValue())
+						.replace("${actual}", log.getActualValue()).replace("${status}", log.getLogStatus())
+						.replace("${link}", log.getAttachment()).replace("${timestamp}", log.getEvidenceTime());
 			}
 			rows += row;
 			counter++;

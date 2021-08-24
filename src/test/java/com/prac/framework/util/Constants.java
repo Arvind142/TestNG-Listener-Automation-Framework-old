@@ -14,7 +14,6 @@ public class Constants {
 		public static final String INFO = "INFO";
 		public static final String WARNING = "WARNING";
 		public static final String SKIP = "SKIP";
-		public static final String seprator = ">>>>>>>>>>>>>>>>>>";
 	}
 
 	public static class WebLocator {

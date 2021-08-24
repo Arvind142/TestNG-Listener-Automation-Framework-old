@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 public class ListenerClass implements ITestListener {
 
 	// stores test results
-	public static Map<String, List<String>> testResultMap = new ConcurrentHashMap<String, List<String>>();
+	public static Map<String, List<Test>> testResultMap = new ConcurrentHashMap<String, List<Test>>();
 
 	// holds starts and end time of test suite
 	public static Map<String, Date> suiteTimeStamps = new ConcurrentHashMap<String, Date>();
@@ -40,10 +40,8 @@ public class ListenerClass implements ITestListener {
 	// formating time
 	public static SimpleDateFormat reportUiDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
 
-	
-
 	public ListenerClass() throws Exception {
-	
+
 	}
 
 	@Override
@@ -106,7 +104,6 @@ public class ListenerClass implements ITestListener {
 		report.createReport(context);
 
 		// email report
-		
 
 	}
 
@@ -118,7 +115,7 @@ public class ListenerClass implements ITestListener {
 	 */
 	public void setLogForTimeoutCase(ITestResult result, String statement) {
 		// adding log for timeoutCase
-		List<String> singleLog = new ArrayList<String>();
+		List<Test> singleLog = new ArrayList<Test>();
 		String methodName = result.getInstanceName().replace(".", "_");
 		methodName = methodName.split("_")[methodName.split("_").length - 1];
 		if (result.getParameters().length > 0) {
@@ -131,15 +128,9 @@ public class ListenerClass implements ITestListener {
 			singleLog = testResultMap.get(methodName);
 		}
 		if (statement.contains("TESTNG: Skip")) {
-			singleLog.add("Test Execution" + Constants.Reporting.seprator + "[]" + Constants.Reporting.seprator
-					+ statement + Constants.Reporting.seprator + Constants.Reporting.SKIP + Constants.Reporting.seprator
-					+ "[]" + Constants.Reporting.seprator
-					+ reportUiDateFormat.format(Calendar.getInstance().getTime()));
+			singleLog.add(Test.logSkip("Test execution", statement));
 		} else {
-			singleLog.add("Test Execution" + Constants.Reporting.seprator + "[]" + Constants.Reporting.seprator
-					+ statement + Constants.Reporting.seprator + Constants.Reporting.FAIL + Constants.Reporting.seprator
-					+ "[]" + Constants.Reporting.seprator
-					+ reportUiDateFormat.format(Calendar.getInstance().getTime()));
+			singleLog.add(Test.logError("Test Execution", statement));
 		}
 		if (testResultMap.containsKey(methodName)) {
 			testResultMap.replace(methodName, singleLog);
