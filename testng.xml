@@ -4,7 +4,7 @@
 	<!-- thread-count="10" parallel="methods" -->
 	<!-- Listeners to help with reporting -->
 	<listeners>
-		<listener class-name="com.prac.util.ListenerClass"></listener>
+		<listener class-name="com.prac.framework.util.ListenerClass"></listener>
 	</listeners>
 	<test name="Test">
 		<classes>

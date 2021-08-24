@@ -65,8 +65,7 @@ public class Library {
 	 */
 	public void readEnvironmentLevelProperty() {
 		try (InputStream ins = getClass().getClassLoader()
-				.getResource(applicationLevelProperty.getProperty("Environment") + "/"
-						+ applicationLevelProperty.getProperty("ApplicationName") + ".properties")
+				.getResource(applicationLevelProperty.getProperty("Environment") + "/"+ applicationLevelProperty.getProperty("ApplicationName") + ".properties")
 				.openStream()) {
 			environmentLevelProperty.load(ins);
 			if (environmentLevelProperty.keySet().size() == 0) {

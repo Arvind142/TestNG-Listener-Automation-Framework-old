@@ -34,7 +34,7 @@ public class FlowClass extends TestNGBase {
 		}
 	}
 
-	@DataProvider(name = "dataProvider",parallel = true)
+	@DataProvider(name = "dataProvider", parallel = true)
 	public Object[][] dataProvider() {
 		return businessFunction.getDataFromExcel("Google");
 	}
@@ -124,10 +124,10 @@ public class FlowClass extends TestNGBase {
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName());
 		try {
-			
+
 			for (int i = 0; i < 10; i++) {
 				swap(i);
-				//something
+				// something
 				log(testName, "TimeOUT timeoutExceptionMethod", "Worked", "", Constants.Reporting.PASS);
 			}
 		} catch (SkipException e) {
@@ -139,30 +139,22 @@ public class FlowClass extends TestNGBase {
 	}
 
 	private void swap(int counter) {
-		int a=0,b=0;
-		for(int i=0;i<=counter;i++) {
-			b=a;
-			a=i;
-			
+		int a = 0, b = 0;
+		for (int i = 0; i <= counter; i++) {
+			b = a;
+			a = i;
 		}
 	}
 
-	@Test(dataProvider = "dataProvider1", timeOut = 1)
+	@Test(dataProvider = "dataProvider1", timeOut = (1000 * 10))
 	public void timeoutExceptionWP(String tcName, String value) {
 		// few reporting must
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName()) + "." + tcName;
-		try {
-			for (int i = 0; i < 10; i++) {
-				log(testName, "TimeOUT Exception", "Worked", "", Constants.Reporting.PASS);
-			}
-
-			System.out.println("Method passed!");
-		} catch (SkipException e) {
-			log(testName, "Skip Exception", "", "", Constants.Reporting.SKIP);
-		} catch (Exception e) {
-			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
-					Constants.Reporting.FAIL);
+		for (int i = 0; i < 1000; i++) {
+			log(testName, "TimeOUT Exception", "Worked", "", Constants.Reporting.PASS);
 		}
+		System.out.println("Method passed!");
+
 	}
 }

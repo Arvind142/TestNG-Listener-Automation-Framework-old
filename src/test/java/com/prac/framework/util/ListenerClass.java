@@ -40,34 +40,10 @@ public class ListenerClass implements ITestListener {
 	// formating time
 	public static SimpleDateFormat reportUiDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
 
-	// logger
-	// getting class name at runtime
-	private static final String className = ListenerClass.class.getName();
-
-	// logger initialized with MC
-	public static final Logger logger = Logger.getLogger(className);
-
-	// handlers i.e. file and console
-	private static Handler consoleHandler = null, fileHandler = null;
+	
 
 	public ListenerClass() throws Exception {
-		// turning off parent handler i.e. consoleHandler
-		logger.setUseParentHandlers(false);
-
-		// creating ConsoleHandler and setting level
-		consoleHandler = new ConsoleHandler();
-		consoleHandler.setLevel(Level.ALL);
-
-		// creating FileHandler and setting level
-		fileHandler = new FileHandler("src/test/resource/" + className + ".log");
-		fileHandler.setLevel(Level.ALL);
-
-		// Adding handlers
-		logger.addHandler(consoleHandler);
-		logger.addHandler(fileHandler);
-		
-		logger.setLevel(Level.ALL);
-
+	
 	}
 
 	@Override
@@ -113,7 +89,6 @@ public class ListenerClass implements ITestListener {
 	@Override
 	public void onStart(ITestContext context) {
 		suiteTimeStamps.put("suiteStartTime", Calendar.getInstance().getTime());
-		logger.log(Level.INFO, "Suite execution started");
 	}
 
 	@Override
@@ -132,8 +107,6 @@ public class ListenerClass implements ITestListener {
 
 		// email report
 		
-		
-		logger.log(Level.INFO, "Suite execution stopped");
 
 	}
 
