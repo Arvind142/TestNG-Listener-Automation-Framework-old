@@ -8,19 +8,61 @@ package com.prac.framework.util;
  *
  */
 public class Constants {
+	/**
+	 * Reporting class holds all reporting variables
+	 * 
+	 * @author arvin
+	 *
+	 */
 	public static class Reporting {
+		/**
+		 * PASS status in log
+		 */
 		public static final String PASS = "PASS";
+		/**
+		 * FAIL status in log
+		 */
 		public static final String FAIL = "FAIL";
+		/**
+		 * INFO status in log
+		 */
 		public static final String INFO = "INFO";
+		/**
+		 * WARNING status in log
+		 */
 		public static final String WARNING = "WARNING";
+		/**
+		 * SKIP status in log
+		 */
 		public static final String SKIP = "SKIP";
 	}
 
+	/***
+	 * below class holds all web based locators
+	 * 
+	 * @author arvin
+	 *
+	 */
 	public static class WebLocator {
+		/**
+		 * locator : id
+		 */
 		public static final String ID = "id";
+		/**
+		 * locator : name
+		 */
 		public static final String NAME = "name";
+		/**
+		 * locator : xpath
+		 */
 		public static final String XPATH = "xpath";
+		/**
+		 * locator : tagname
+		 */
 		public static final String TAGNAME = "tagname";
+		/**
+		 * locator : linkText
+		 */
 		public static final String LINKTEXT = "linktext";
 	}
 }

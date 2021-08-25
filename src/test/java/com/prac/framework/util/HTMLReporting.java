@@ -1,27 +1,31 @@
 package com.prac.framework.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.FileUtils;
 import org.testng.ITestContext;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
+/**
+ * class to create copy and create html report
+ * 
+ * @author arvin
+ *
+ */
 public class HTMLReporting {
-	HashMap<String, List<String>> testResults = null;
-	String baseHtmlPath = "./HTMLReportFormat/Index.html";
-	String baseHtmlFolder = "./HTMLReportFormat/";
-	String baseCssFolder = "./HTMLReportFormat/css/";
+
+	// few required vars
+	final String baseHtmlPath = "./HTMLReportFormat/Index.html";
+	final String baseHtmlFolder = "./HTMLReportFormat/";
+	final String baseCssFolder = "./HTMLReportFormat/css/";
+
 	// ui date format
-	SimpleDateFormat uidateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+	final SimpleDateFormat uidateFormat = ListenerClass.reportUiDateFormat;
 
 	// reporting
 	String testLinks = "<a class=\"nav-link \" id=\"v-pills-{testCaseName}-tab\" data-toggle=\"pill\" style=\" color:#000; width:100% \"	href=\"#v-pills-{testCaseName}\" role=\"tab\" aria-controls=\"v-pills-{testCaseName}\" aria-selected=\"true\"><button type=\"button\" class=\"btn btn-{status}\"> </button>&nbsp;{testCaseName}</a>";
@@ -29,6 +33,11 @@ public class HTMLReporting {
 	// properties
 	Properties applicationLevelProperty = new Properties();
 
+	/**
+	 * to create HTML report
+	 * 
+	 * @param context ITestContext to help with execution details
+	 */
 	public void createReport(ITestContext context) {
 		// creating report folder
 		File reportFolder = createReportFolder();
@@ -37,36 +46,6 @@ public class HTMLReporting {
 		// edit html
 		File htmlFile = new File(reportFolder.getAbsolutePath() + "/index.html");
 		updateHTML(htmlFile, context);
-	}
-
-	/**
-	 * copy files into reporting directory
-	 * 
-	 * @param reportingFolder
-	 */
-	public void copyFilesIntoDirectory(File reportingFolder) {
-		try {
-			File htmlFolder = new File(baseHtmlFolder);
-			File destFile = null;
-			for (File file : htmlFolder.listFiles()) {
-				if (file.isDirectory()) {
-					for (File subfile : file.listFiles()) {
-						destFile = new File(reportingFolder.getAbsolutePath() + "/" + file.getName());
-						if (!destFile.exists()) {
-							destFile.mkdirs();
-						}
-						destFile = new File(
-								reportingFolder.getAbsolutePath() + "/" + file.getName() + "/" + subfile.getName());
-						FileUtils.copyFile(subfile, destFile);
-					}
-				} else {
-					destFile = new File(reportingFolder.getAbsolutePath() + "/" + file.getName());
-					FileUtils.copyFile(file, destFile);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -97,6 +76,43 @@ public class HTMLReporting {
 
 	}
 
+	/**
+	 * copy files into reporting directory
+	 * 
+	 * @param reportingFolder folder where reports should be placed
+	 */
+	public void copyFilesIntoDirectory(File reportingFolder) {
+		try {
+			File htmlFolder = new File(baseHtmlFolder);
+			File destFile = null;
+			for (File file : htmlFolder.listFiles()) {
+				if (file.isDirectory()) {
+					for (File subfile : file.listFiles()) {
+						destFile = new File(reportingFolder.getAbsolutePath() + "/" + file.getName());
+						if (!destFile.exists()) {
+							destFile.mkdirs();
+						}
+						destFile = new File(
+								reportingFolder.getAbsolutePath() + "/" + file.getName() + "/" + subfile.getName());
+						FileUtils.copyFile(subfile, destFile);
+					}
+				} else {
+					destFile = new File(reportingFolder.getAbsolutePath() + "/" + file.getName());
+					FileUtils.copyFile(file, destFile);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * below code will update html file with required details like
+	 * passed/failed/skipped and test logs
+	 * 
+	 * @param file    html file object
+	 * @param context ITestContext to help with results
+	 */
 	public void updateHTML(File file, ITestContext context) {
 		try {
 			// reading html
@@ -153,27 +169,27 @@ public class HTMLReporting {
 	}
 
 	/**
-	 * create side panelList of All Test Cases
+	 * to create test case links on left panel
 	 * 
-	 * @param context
-	 * @param linkFormat
-	 * @return
+	 * @param linkFormat format in which links should be created
+	 * @return string which holds hyperlink of in required format
 	 */
 	public String getAllTestCasesLink(String linkFormat) {
 		String testCaseLinks = "";
 		for (String key : ListenerClass.testResultMap.keySet()) {
-			testCaseLinks += updateHyperLinkeColorPas_fail(linkFormat, key);
+			testCaseLinks += upadateTestStatusInTestLink(linkFormat, key);
 		}
 		return testCaseLinks;
 	}
 
-	/***
-	 * add tcName, add color
+	/**
+	 * to update test case status in hyperlink with required color
 	 * 
-	 * @param link
-	 * @return
+	 * @param link format of hyperlink
+	 * @param key  testCaseName
+	 * @return link with correct color appended
 	 */
-	public String updateHyperLinkeColorPas_fail(String link, String key) {
+	public String upadateTestStatusInTestLink(String link, String key) {
 		// tcName updated
 		link = (link.replace("{testCaseName}", key.replace(".", "_")));
 		// color based on test Status
@@ -201,6 +217,12 @@ public class HTMLReporting {
 		return link;
 	}
 
+	/**
+	 * to get test case status based on test logs
+	 * 
+	 * @param logs test logs
+	 * @return color i.e. success - PASS, danger - fail, warning - skip
+	 */
 	public String getTestCaseStatus(List<Test> logs) {
 		for (Test log : logs) {
 			if (log.getLogStatus().equals(Constants.Reporting.FAIL)) {
@@ -213,10 +235,9 @@ public class HTMLReporting {
 	}
 
 	/***
-	 * get tables created out of logs
+	 * to create tables out of testLogs
 	 * 
-	 * @param linkFormat
-	 * @return
+	 * @return String which holds all test case tables in division tab
 	 */
 	public String getAllTestTables() {
 		;
@@ -242,26 +263,27 @@ public class HTMLReporting {
 	}
 
 	/**
-	 * update time of Testcase in upperPortion of div
+	 * update time of Test case in upperPortion of division
 	 * 
-	 * @param key
-	 * @param str
-	 * @return
+	 * @param key  test case name
+	 * @param link is format of link
+	 * @return String with date time updated for each test case
 	 */
-	public String testDateUpdate(String key, String str) {
+	public String testDateUpdate(String key, String link) {
 		for (String tc : ListenerClass.testTimeStamps.keySet()) {
 			if (tc.endsWith(key)) {
-				str = str.replace("{startTime}", uidateFormat.format(ListenerClass.testTimeStamps.get(tc).get(0)));
-				str = str.replace("{endTime}", uidateFormat.format(ListenerClass.testTimeStamps.get(tc).get(1)));
+				link = link.replace("{startTime}", uidateFormat.format(ListenerClass.testTimeStamps.get(tc).get(0)));
+				link = link.replace("{endTime}", uidateFormat.format(ListenerClass.testTimeStamps.get(tc).get(1)));
 			}
 		}
-		return str;
+		return link;
 	}
 
 	/***
-	 * create and return table rows
+	 * creates rows for particular test case
 	 * 
-	 * @return
+	 * @param logs test logs
+	 * @return String holding table row tags each row representing one test log
 	 */
 	public String getRowsCreated(List<Test> logs) {
 		String rowFormat = "<tr><td>${stepNo}</td><td>${stepName}</td><td>${expected}</td><td>${actual}</td><td>${status}</td><td><a href=\"${link}\" target=\"_blank\">ClickHere!</a></td><td>${timestamp}</td></tr>";

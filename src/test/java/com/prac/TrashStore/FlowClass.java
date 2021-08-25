@@ -1,20 +1,18 @@
 package com.prac.TrashStore;
 
-import static org.junit.Assert.assertArrayEquals;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import org.openqa.selenium.WebDriver;
 import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Optional;
 import org.testng.annotations.Test;
-
 import com.prac.framework.util.Constants;
 import com.prac.framework.util.TestNGBase;
 
+/**
+ * executable class
+ * 
+ * @author arvin
+ *
+ */
 public class FlowClass extends TestNGBase {
 
 	WebDriver driver = null;
@@ -25,7 +23,7 @@ public class FlowClass extends TestNGBase {
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName());
 		try {
-			log(testName, "VAL1", "Browser started");
+			logInfo(testName, "VAL1", "Browser started");
 			Thread.sleep(15000);
 			log(testName, "Navigation", "Successs Expected", "Success found", Constants.Reporting.PASS);
 		} catch (Exception e) {
@@ -45,7 +43,7 @@ public class FlowClass extends TestNGBase {
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName()) + "." + testData[0];
 		try {
-			log(testName, "VAL1", "Browser started");
+			logInfo(testName, "VAL1", "Browser started");
 			Thread.sleep(15000);
 			log(testName, "Navigation", "Successs Expected", "Success found", Constants.Reporting.PASS);
 		} catch (Exception e) {
@@ -66,7 +64,7 @@ public class FlowClass extends TestNGBase {
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName()) + "." + args[0];
 		try {
-			log(testName, "VAL1", "INFO-LOG");
+			logInfo(testName, "VAL1", "INFO-LOG");
 			Thread.sleep(5000);
 			log(testName, "VAL2", "B", "B");
 			log(testName, "VAL3", "A", "A", Constants.Reporting.PASS);
@@ -143,6 +141,7 @@ public class FlowClass extends TestNGBase {
 		for (int i = 0; i <= counter; i++) {
 			b = a;
 			a = i;
+			a = b;
 		}
 	}
 

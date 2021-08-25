@@ -10,11 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * backbone of framework with all listeners to perform some set of operations
@@ -25,70 +20,101 @@ import java.util.logging.Logger;
  */
 public class ListenerClass implements ITestListener {
 
-	// stores test results
+	/**
+	 * testResultMap holds test results for each case executed
+	 */
 	public static Map<String, List<Test>> testResultMap = new ConcurrentHashMap<String, List<Test>>();
 
-	// holds starts and end time of test suite
+	/**
+	 * suiteTimeStamps holds start and end time of suite execution
+	 */
 	public static Map<String, Date> suiteTimeStamps = new ConcurrentHashMap<String, Date>();
 
-	// holds time of each testcase start and Endtime
+	/**
+	 * testTimeStamps holds test case start and end time execution
+	 */
 	public static Map<String, List<Date>> testTimeStamps = new ConcurrentHashMap<String, List<Date>>();
 
-	// holds start and end time of one testcase at a time
+	/**
+	 * list to put start and end time of test case execution
+	 */
 	private List<Date> testExecutionDates = null;
 
-	// formating time
-	public static SimpleDateFormat reportUiDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
+	/**
+	 * SimpleDateFormat to give one common for to dates reflecting on report
+	 */
+	public static final SimpleDateFormat reportUiDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
 
-	public ListenerClass() throws Exception {
-
-	}
-
+	/**
+	 * first method to be executed on start of suite execution
+	 */
 	@Override
 	public void onTestStart(ITestResult result) {
 		System.out.println(
 				"Case Execution Test Started: " + result.getInstanceName() + "." + result.getMethod().getMethodName());
 		testExecutionDates = new ArrayList<Date>();
+
 	}
 
+	/**
+	 * called when test case execution have no issue/failure
+	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
 		System.out.println("Case Execution Test Success");
 		setTestCaseTimeStamp(result);
 	}
 
+	/**
+	 * called when test case failed
+	 */
 	@Override
 	public void onTestFailure(ITestResult result) {
 		System.out.println("Case Execution Test Failed");
 		setTestCaseTimeStamp(result);
 	}
 
+	/**
+	 * called when test case is skipped
+	 */
 	@Override
 	public void onTestSkipped(ITestResult result) {
 		System.out.println("Case Execution Test Skipped");
-		setLogForTimeoutCase(result, "TESTNG: Skip");
+		setLog(result, "TESTNG: Skip");
 		setTestCaseTimeStamp(result);
 	}
 
+	/**
+	 * test failed with success percentage
+	 */
 	@Override
 	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
 		System.out.println("Case Execution onTestFailedButWithinSuccessPercentage");
 
 	}
 
+	/**
+	 * test execution failed with timeout
+	 */
 	@Override
 	public void onTestFailedWithTimeout(ITestResult result) {
 		System.out.println("Case Execution onTestFailedWithTimeout");
 		// to log entry for timeout case
-		setLogForTimeoutCase(result, "TESTNG: Timeout error");
+		setLog(result, "TESTNG: Timeout error");
 		onTestFailure(result);
 	}
 
+	/**
+	 * test execution started
+	 */
 	@Override
 	public void onStart(ITestContext context) {
 		suiteTimeStamps.put("suiteStartTime", Calendar.getInstance().getTime());
 	}
 
+	/***
+	 * suite execution complete with finish method
+	 */
 	@Override
 	public void onFinish(ITestContext context) {
 
@@ -107,13 +133,12 @@ public class ListenerClass implements ITestListener {
 
 	}
 
-	/**
-	 * method would set log for timeout cases where case execution crossed timeout
-	 * limit
+	/***
 	 * 
-	 * @param result
+	 * @param result    ITestResult to help in identification on tc name and status
+	 * @param statement statement to log
 	 */
-	public void setLogForTimeoutCase(ITestResult result, String statement) {
+	public void setLog(ITestResult result, String statement) {
 		// adding log for timeoutCase
 		List<Test> singleLog = new ArrayList<Test>();
 		String methodName = result.getInstanceName().replace(".", "_");
@@ -140,10 +165,11 @@ public class ListenerClass implements ITestListener {
 	}
 
 	/**
-	 * method helps in identifying and logging of start and end tiem for each test
+	 * method helps in identifying and logging of start and end time for each test
 	 * case
 	 * 
-	 * @param result
+	 * @param result ItestResult which will help method is identification of start
+	 *               and end time of test case
 	 */
 	public void setTestCaseTimeStamp(ITestResult result) {
 		testExecutionDates.clear();
@@ -165,8 +191,8 @@ public class ListenerClass implements ITestListener {
 	/**
 	 * used to convert object into object[] based on requirement
 	 * 
-	 * @param obj
-	 * @return
+	 * @param obj parameter of method
+	 * @return string value of testcaseName
 	 */
 	public String getTestCaseNameConverted(Object obj) {
 		if (obj instanceof Object) {

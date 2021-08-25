@@ -5,39 +5,53 @@ import static org.testng.Assert.assertEquals;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 
 /***
- * class consist of few methods calls required for framework to be initialized
+ * class contains few reporting variables and methods
  * 
  * @author arvin
  *
  */
 public class TestNGBase {
-	/** reporting vars **/
+	/***
+	 * classLevel map holds details of test case execution at class level
+	 */
 	private Map<String, List<Test>> classLevel = null;
+	/***
+	 * testLevel list holds logs of each test case
+	 */
 	private List<Test> testLevel = null;
+	/**
+	 * Test class variable for test logging
+	 */
 	private Test log = null;
+	/**
+	 * businessfunction variable to work with businessFunction methods
+	 */
 	protected BusinessFunction businessFunction = new BusinessFunction();
 
-	// used for testCase logging
+	/**
+	 * holds class name
+	 */
 	public String className = "";
+	/***
+	 * hold test case name i.e methodName_paramName if applicable
+	 */
 	public String testName = "";
 
-	// formating date
+	/**
+	 * date format to give date in correct format in evidence
+	 */
 	SimpleDateFormat reportUiDateFormat = ListenerClass.reportUiDateFormat;
 
 	/***
-	 * below method is to initialize required framework level variable for easier
-	 * work
+	 * before class to initialize few properties so that it helps user in getting
+	 * details in easier way from property file
 	 */
 	@BeforeClass
 	public void beforeClass() {
@@ -47,6 +61,10 @@ public class TestNGBase {
 		className = this.getClass().getSimpleName();
 	}
 
+	/**
+	 * AfterClass acts as finisher who will put all class level logs to listener
+	 * class variable so that it can be used for reporting
+	 */
 	@AfterClass
 	public void afterClass() {
 		// updating log in core reporting
@@ -70,94 +88,129 @@ public class TestNGBase {
 		}
 	}
 
-	/***
-	 * log info statements
+	/**
+	 * INFO log statement
 	 * 
-	 * @param className expects tc identifier
-	 * @param steps     steps for info
-	 * @param details   details on info statement
+	 * @param testName testCaseName
+	 * @param steps    step description
+	 * @param details  details which is to be logged
 	 */
-	public synchronized void log(String className, String steps, String details) {
+	public synchronized void logInfo(String testName, String steps, String details) {
 		log = Test.logInfo(steps, details);
-		addLogToMap(className, log);
+		addLogToMap(testName, log);
 	}
 
 	/***
-	 * used for logging purpose where code decides on pass/fail
+	 * SKIP log statement
 	 * 
-	 * @param className tc identifier
-	 * @param steps     step description
-	 * @param expected  expected value
-	 * @param actual    actual value
+	 * @param testName testCaseName
+	 * @param steps    step description
+	 * @param details  details which is to be logged
 	 */
-	public synchronized void log(String className, String steps, String expected, String actual) {
+	public synchronized void logSkip(String testName, String steps, String details) {
+		log = Test.logSkip(steps, details);
+		addLogToMap(testName, log);
+	}
+
+	/***
+	 * PASS log statement
+	 * 
+	 * @param testName testCaseName
+	 * @param steps    step description
+	 * @param details  details which is to be logged
+	 */
+	public synchronized void logPass(String testName, String steps, String details) {
+		log = Test.logPass(steps, details);
+		addLogToMap(testName, log);
+		assertEquals(details, details);
+	}
+
+	/***
+	 * Error log statement
+	 * 
+	 * @param testName testCaseName
+	 * @param steps    step description
+	 * @param expected  details which is to be logged
+	 */
+	public synchronized void logError(String testName, String steps, String expected) {
+		log = Test.logError(steps, expected);
+		addLogToMap(testName, log);
+		assertEquals(expected, "Error Found!");
+	}
+
+	/***
+	 * log statement which evaluates status of log with expected and actual value
+	 * 
+	 * @param testName test caseName
+	 * @param steps    step description
+	 * @param expected expected value
+	 * @param actual   actual value
+	 */
+	public synchronized void log(String testName, String steps, String expected, String actual) {
 		log = Test.log(steps, expected, actual);
-		addLogToMap(className, log);
+		addLogToMap(testName, log);
 		assertEquals(expected, actual);
 	}
 
 	/***
-	 * log to report check point with statement status as given by user
+	 * log statement status is taken as it is from method parameter variable status
 	 * 
-	 * @param className tc identifier
-	 * @param steps     step description
-	 * @param expected  expected value
-	 * @param actual    actual value
-	 * @param status    Pass/Fail/Info/Skip
+	 * @param testName test caseName
+	 * @param steps    step description
+	 * @param expected expected value
+	 * @param actual   actual value
+	 * @param status   log status
 	 */
-	public synchronized void log(String className, String steps, String expected, String actual, String status) {
+	public synchronized void log(String testName, String steps, String expected, String actual, String status) {
 		log = Test.log(steps, expected, actual, status);
-		addLogToMap(className, log);
+		addLogToMap(testName, log);
 		if (status.equals(Constants.Reporting.FAIL)) {
 			assertEquals(expected, actual);
 		}
 	}
 
 	/***
-	 * log to report check point with statement status as given by user
 	 * 
-	 * @param className  tc identifier
+	 * @param testName   test caseName
 	 * @param steps      step description
 	 * @param expected   expected value
 	 * @param actual     actual value
-	 * @param status     Pass/Fail/Info/Skip
-	 * @param attachmant attachment path
+	 * @param status     log status
+	 * @param attachmant path where evidence is extracted
 	 */
-	public synchronized void log(String className, String steps, String expected, String actual, String status,
+	public synchronized void log(String testName, String steps, String expected, String actual, String status,
 			String attachmant) {
 		log = Test.log(steps, expected, actual, status, attachmant);
-		addLogToMap(className, log);
+		addLogToMap(testName, log);
 		if (status.equals(Constants.Reporting.FAIL)) {
 			assertEquals(expected, actual);
 		}
 	}
 
-	/**
-	 * add test level logs to classLevel log variable
+	/***
+	 * method puts test log into class level variable for better reporting
 	 * 
-	 * 
-	 * @param className expects classname - which is methodname/methodname + first
-	 *                  parameter name
-	 * @param log       expects logs statement in string format
+	 * @param testName test case name
+	 * @param log      statement with status
 	 */
-	public synchronized void addLogToMap(String className, Test log) {
-		if (classLevel.containsKey(className)) {
+	public synchronized void addLogToMap(String testName, Test log) {
+		if (classLevel.containsKey(testName)) {
 			// already exist
-			if (classLevel.get(className) != null) {
+			if (classLevel.get(testName) != null) {
 				// getting list out of it
-				testLevel = classLevel.get(className);
+				testLevel = classLevel.get(testName);
 			} else {
 				// creating new list
 				testLevel = new ArrayList<Test>();
 			}
 			// adding log and updating map
 			testLevel.add(log);
-			classLevel.replace(className, testLevel);
+			classLevel.replace(testName, testLevel);
 		} else {
 			// creating list and updating it in map
 			testLevel = new ArrayList<Test>();
 			testLevel.add(log);
-			classLevel.put(className, testLevel);
+			classLevel.put(testName, testLevel);
 		}
 	}
 

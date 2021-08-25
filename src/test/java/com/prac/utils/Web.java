@@ -18,7 +18,10 @@ import io.github.bonigarcia.wdm.WebDriverManager;
  */
 public class Web {
 	/***
-	 * below method lets you initialize your browser instances
+	 * to initialize webdriver based on sent browserName
+	 * 
+	 * @param browserName browser name for which we want to initialize driver
+	 * @return webdriver variable
 	 */
 	public static synchronized WebDriver initializeWebDriver(String browserName) {
 		WebDriver driver = null;
@@ -51,10 +54,11 @@ public class Web {
 		return driver;
 	}
 
-	/**
-	 * this method lets you open url
+	/***
+	 * to open any url
 	 * 
-	 * @param url page you want to open
+	 * @param driver web driver variable
+	 * @param url    url to open
 	 */
 	public void openURL(WebDriver driver, String url) {
 		driver.get(url);
@@ -62,8 +66,10 @@ public class Web {
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 	}
 
-	/***
-	 * simple and sweet driver.quit to destroy running drivers :D
+	/**
+	 * to close all browser instances
+	 * 
+	 * @param driver web driver object
 	 */
 	public void destroyWebDriver(WebDriver driver) {
 		if (driver != null)

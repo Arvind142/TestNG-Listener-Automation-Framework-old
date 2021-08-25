@@ -4,18 +4,9 @@ import java.util.List;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import com.codoid.products.fillo.Fillo;
 import com.codoid.products.fillo.Recordset;
-import io.github.bonigarcia.wdm.WebDriverManager;
 
 /****
  * Library class hold most basic and required methods to read properties files,
@@ -27,13 +18,19 @@ import io.github.bonigarcia.wdm.WebDriverManager;
  */
 public class Library {
 
-	// property variables
+	/**
+	 * application level property variables :)
+	 */
 	public final Properties applicationLevelProperty = new Properties();
+	/**
+	 * environment level property variables :)
+	 */
 	public final Properties environmentLevelProperty = new Properties();
 
-	// environment and path
+	/**
+	 * variables to get data from property file
+	 */
 	public String environmentFolder;
-	public String outputFolder;
 
 	/**
 	 * This method will help in reading application level property
@@ -65,7 +62,8 @@ public class Library {
 	 */
 	public void readEnvironmentLevelProperty() {
 		try (InputStream ins = getClass().getClassLoader()
-				.getResource(applicationLevelProperty.getProperty("Environment") + "/"+ applicationLevelProperty.getProperty("ApplicationName") + ".properties")
+				.getResource(applicationLevelProperty.getProperty("Environment") + "/"
+						+ applicationLevelProperty.getProperty("ApplicationName") + ".properties")
 				.openStream()) {
 			environmentLevelProperty.load(ins);
 			if (environmentLevelProperty.keySet().size() == 0) {
@@ -79,7 +77,6 @@ public class Library {
 			System.exit(0);
 		}
 	}
-
 
 	/***
 	 * getDataFromExcel retrieve testdata from excel and return it in Object[][]

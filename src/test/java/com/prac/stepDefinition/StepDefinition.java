@@ -4,6 +4,12 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+/**
+ * step definition
+ * 
+ * @author arvin
+ *
+ */
 public class StepDefinition {
 
 	@Given("I want to write a step with precondition")
