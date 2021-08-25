@@ -4,7 +4,33 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.personal</groupId>
 	<artifactId>TestNG_Framework</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
+	<developers>
+		<developer>
+			<id>arvind</id>
+			<name>Arvind Choudhary</name>
+			<email>arvindchoudhary142@yahoo.in</email>
+			<url>http://www.example.com/jdoe</url>
+			<organization>NA</organization>
+			<organizationUrl>NA</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<id>Kshitij</id>
+			<name>Kshitij Bhuwad</name>
+			<email>NA</email>
+			<url>NA</url>
+			<organization>NA</organization>
+			<organizationUrl>NA</organizationUrl>
+			<roles>
+				<role>consultant</role>
+			</roles>
+		</developer>
+	</developers>
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>

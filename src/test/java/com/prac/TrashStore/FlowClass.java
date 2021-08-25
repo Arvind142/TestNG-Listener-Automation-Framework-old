@@ -81,6 +81,7 @@ public class FlowClass extends TestNGBase {
 	public void invalidCaseWithSkip() {
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName());
+		System.out.println(testName);
 		// few reporting must
 		throw new SkipException("Test Case to be skipped");
 	}
@@ -145,12 +146,12 @@ public class FlowClass extends TestNGBase {
 		}
 	}
 
-	@Test(dataProvider = "dataProvider1", timeOut = (1000 * 10))
+	@Test(dataProvider = "dataProvider1", timeOut = 1)
 	public void timeoutExceptionWP(String tcName, String value) {
 		// few reporting must
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName()) + "." + tcName;
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 10; i++) {
 			log(testName, "TimeOUT Exception", "Worked", "", Constants.Reporting.PASS);
 		}
 		System.out.println("Method passed!");

@@ -1,4 +1,4 @@
-package com.prac.main;
+package com.prac.TrashStore;
 
 import com.prac.framework.util.Library;
 

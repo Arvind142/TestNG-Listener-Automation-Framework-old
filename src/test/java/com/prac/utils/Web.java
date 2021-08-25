@@ -1,13 +1,15 @@
 package com.prac.utils;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-
+import org.openqa.selenium.support.ui.FluentWait;
+import com.google.common.base.Function;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
@@ -23,7 +25,7 @@ public class Web {
 	 * @param browserName browser name for which we want to initialize driver
 	 * @return webdriver variable
 	 */
-	public static synchronized WebDriver initializeWebDriver(String browserName) {
+	public synchronized WebDriver initializeWebDriver(String browserName) {
 		WebDriver driver = null;
 		try {
 			switch (browserName.toUpperCase()) {
@@ -64,6 +66,22 @@ public class Web {
 		driver.get(url);
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+	}
+
+	/**
+	 * confirms if page is loaded or not with fluent wait and java script executor
+	 * 
+	 * @param driver
+	 */
+	public void waitForPageLoad(WebDriver driver) {
+		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(20))
+				.pollingEvery(Duration.ofSeconds(1)).ignoring(Exception.class);
+		wait.until(new Function<WebDriver, Boolean>() {
+			@Override
+			public Boolean apply(WebDriver input) {
+				return ((JavascriptExecutor) input).executeScript("return document.readyState").equals("complete");
+			}
+		});
 	}
 
 	/**

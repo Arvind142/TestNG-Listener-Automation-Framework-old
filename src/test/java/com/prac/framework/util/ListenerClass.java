@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +30,11 @@ public class ListenerClass implements ITestListener {
 	 * suiteTimeStamps holds start and end time of suite execution
 	 */
 	public static Map<String, Date> suiteTimeStamps = new ConcurrentHashMap<String, Date>();
+
+	/**
+	 * suite execution status
+	 */
+	public static Map<String, Integer> suiteStatus = new ConcurrentHashMap<String, Integer>();
 
 	/**
 	 * testTimeStamps holds test case start and end time execution
@@ -121,9 +127,10 @@ public class ListenerClass implements ITestListener {
 		suiteTimeStamps.put("suiteEndTime", Calendar.getInstance().getTime());
 		System.out.println(
 				"------------------------------------Case Execution Finish------------------------------------");
-		System.out.println("Passed:" + context.getPassedTests().size());
-		System.out.println("Failed:" + context.getFailedTests().size());
-		System.out.println("Skipped:" + context.getSkippedTests().size());
+		suiteStatus = getSuiteStatus();
+		for (String s : suiteStatus.keySet()) {
+			System.out.println(s + "-->" + suiteStatus.get(s));
+		}
 
 		// creating html report
 		HTMLReporting report = new HTMLReporting();
@@ -207,4 +214,32 @@ public class ListenerClass implements ITestListener {
 		}
 	}
 
+	/**
+	 * method gives test case status based logs of each test case
+	 * 
+	 * @return map which includes count on passed,failed and skipped cases
+	 */
+	public Map<String, Integer> getSuiteStatus() {
+		Map<String, Integer> suiteStatus = new HashMap<>();
+		int pass = 0, fail = 0, skip = 0;
+		for (String testCase : testResultMap.keySet()) {
+			switch (HTMLReporting.getTestCaseStatus(testResultMap.get(testCase))) {
+			case "success":
+				pass++;
+				break;
+			case "danger":
+				fail++;
+				break;
+			case "warning":
+				skip++;
+				break;
+			default:
+				break;
+			}
+		}
+		suiteStatus.put("Passed", pass);
+		suiteStatus.put("Failed", fail);
+		suiteStatus.put("Skipped", skip);
+		return suiteStatus;
+	}
 }

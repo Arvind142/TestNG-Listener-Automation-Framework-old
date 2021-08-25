@@ -1,8 +1,5 @@
 package com.prac.framework.util;
 
-import com.prac.main.BusinessFunction;
-import static org.testng.Assert.assertEquals;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +7,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import com.prac.TrashStore.BusinessFunction;
+import com.prac.utils.Web;
+import com.prac.utils.API;
+import com.prac.utils.Database;
 
 /***
  * class contains few reporting variables and methods
@@ -34,6 +35,21 @@ public class TestNGBase {
 	 * businessfunction variable to work with businessFunction methods
 	 */
 	protected BusinessFunction businessFunction = new BusinessFunction();
+
+	/***
+	 * web object to work with web methods
+	 */
+	protected Web web = new Web();
+
+	/**
+	 * API class object to work with api based method
+	 */
+	protected API api = new API();
+
+	/**
+	 * DataBase class object to work with db related methods
+	 */
+	protected Database db = new Database();
 
 	/**
 	 * holds class name
@@ -122,7 +138,6 @@ public class TestNGBase {
 	public synchronized void logPass(String testName, String steps, String details) {
 		log = Test.logPass(steps, details);
 		addLogToMap(testName, log);
-		assertEquals(details, details);
 	}
 
 	/***
@@ -130,12 +145,11 @@ public class TestNGBase {
 	 * 
 	 * @param testName testCaseName
 	 * @param steps    step description
-	 * @param expected  details which is to be logged
+	 * @param expected details which is to be logged
 	 */
 	public synchronized void logError(String testName, String steps, String expected) {
 		log = Test.logError(steps, expected);
 		addLogToMap(testName, log);
-		assertEquals(expected, "Error Found!");
 	}
 
 	/***
@@ -149,7 +163,6 @@ public class TestNGBase {
 	public synchronized void log(String testName, String steps, String expected, String actual) {
 		log = Test.log(steps, expected, actual);
 		addLogToMap(testName, log);
-		assertEquals(expected, actual);
 	}
 
 	/***
@@ -164,9 +177,6 @@ public class TestNGBase {
 	public synchronized void log(String testName, String steps, String expected, String actual, String status) {
 		log = Test.log(steps, expected, actual, status);
 		addLogToMap(testName, log);
-		if (status.equals(Constants.Reporting.FAIL)) {
-			assertEquals(expected, actual);
-		}
 	}
 
 	/***
@@ -182,9 +192,6 @@ public class TestNGBase {
 			String attachmant) {
 		log = Test.log(steps, expected, actual, status, attachmant);
 		addLogToMap(testName, log);
-		if (status.equals(Constants.Reporting.FAIL)) {
-			assertEquals(expected, actual);
-		}
 	}
 
 	/***

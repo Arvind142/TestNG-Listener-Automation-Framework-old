@@ -1,5 +1,6 @@
 package com.prac.framework.util;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -63,8 +64,7 @@ public class HTMLReporting {
 				environmentFolder.mkdirs();
 			}
 			// ::::here we create new reporting folder
-			reportFolder = new File(
-					environmentFolder.getAbsolutePath() + "/" + (environmentFolder.listFiles().length + 1));
+			reportFolder = new File(environmentFolder.getAbsolutePath() + "/" + (environmentFolder.listFiles().length));
 			if (!reportFolder.exists()) {
 				reportFolder.mkdirs();
 			}
@@ -127,31 +127,18 @@ public class HTMLReporting {
 			// updating status matrix
 			reportString = reportString.replace("{totalCase}", String.valueOf((context.getPassedTests().size()
 					+ context.getFailedTests().size() + context.getSkippedTests().size())));
-			reportString = reportString.replace("{passed}", String.valueOf(context.getPassedTests().size()));
-			reportString = reportString.replace("{failed}", String.valueOf(context.getFailedTests().size()));
-			reportString = reportString.replace("{skipped}", String.valueOf(context.getSkippedTests().size()));
+			reportString = reportString.replace("{passed}", String.valueOf(ListenerClass.suiteStatus.get("Passed")));
+			reportString = reportString.replace("{failed}", String.valueOf(ListenerClass.suiteStatus.get("Failed")));
+			reportString = reportString.replace("{skipped}", String.valueOf(ListenerClass.suiteStatus.get("Skipped")));
 
 			// updating executionTime
 			reportString = reportString.replace("{startTime}",
 					uidateFormat.format(ListenerClass.suiteTimeStamps.get("suiteStartTime")));
 			reportString = reportString.replace("{endTime}",
 					uidateFormat.format(ListenerClass.suiteTimeStamps.get("suiteEndTime")));
-			long diffInMillies = Math.abs(ListenerClass.suiteTimeStamps.get("suiteEndTime").getTime()
-					- ListenerClass.suiteTimeStamps.get("suiteStartTime").getTime());
-			long hours = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-			long minutes = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
-			long seconds = TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-			if (hours != 0) {
-				reportString = reportString.replace("{executionTime}", String.valueOf(hours) + " h:"
-						+ String.valueOf(minutes) + " m:" + String.valueOf(seconds) + " s");
-			} else {
-				if (minutes != 0) {
-					reportString = reportString.replace("{executionTime}",
-							String.valueOf(minutes) + " m:" + String.valueOf(seconds) + " s");
-				} else {
-					reportString = reportString.replace("{executionTime}", String.valueOf(seconds) + "s");
-				}
-			}
+			reportString = reportString.replace("{executionTime}",
+					getTimeDifference(ListenerClass.suiteTimeStamps.get("suiteStartTime"),
+							ListenerClass.suiteTimeStamps.get("suiteEndTime")));
 
 			// adding test cases hyperlink
 			reportString = reportString.replace("{testCaseLinks}", getAllTestCasesLink(testLinks));
@@ -223,7 +210,7 @@ public class HTMLReporting {
 	 * @param logs test logs
 	 * @return color i.e. success - PASS, danger - fail, warning - skip
 	 */
-	public String getTestCaseStatus(List<Test> logs) {
+	public static String getTestCaseStatus(List<Test> logs) {
 		for (Test log : logs) {
 			if (log.getLogStatus().equals(Constants.Reporting.FAIL)) {
 				return "danger";
@@ -270,10 +257,14 @@ public class HTMLReporting {
 	 * @return String with date time updated for each test case
 	 */
 	public String testDateUpdate(String key, String link) {
+		Date startTime = null, endTime = null;
 		for (String tc : ListenerClass.testTimeStamps.keySet()) {
 			if (tc.endsWith(key)) {
-				link = link.replace("{startTime}", uidateFormat.format(ListenerClass.testTimeStamps.get(tc).get(0)));
-				link = link.replace("{endTime}", uidateFormat.format(ListenerClass.testTimeStamps.get(tc).get(1)));
+				startTime = ListenerClass.testTimeStamps.get(tc).get(0);
+				endTime = ListenerClass.testTimeStamps.get(tc).get(1);
+				link = link.replace("{startTime}", uidateFormat.format(startTime));
+				link = link.replace("{endTime}", uidateFormat.format(endTime));
+				link +=", timeTaken: "+ getTimeDifference(startTime, endTime);
 			}
 		}
 		return link;
@@ -307,5 +298,28 @@ public class HTMLReporting {
 			counter++;
 		}
 		return rows;
+	}
+
+	/**
+	 * below method returns time difference in between of start and end time
+	 * 
+	 * @param startTime date variable holding start date
+	 * @param endTime   date variable holding end date
+	 * @return difference can be in *H*M*S or *M*S or *S based on time taken
+	 */
+	public String getTimeDifference(Date startTime, Date endTime) {
+		long diffInMillies = Math.abs(endTime.getTime() - startTime.getTime());
+		long hours = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+		long minutes = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
+		long seconds = TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+		if (hours != 0) {
+			return (String.valueOf(hours) + " h:" + String.valueOf(minutes) + " m:" + String.valueOf(seconds) + " s");
+		} else {
+			if (minutes != 0) {
+				return (String.valueOf(minutes) + " m:" + String.valueOf(seconds) + " s");
+			} else {
+				return (String.valueOf(seconds) + "s");
+			}
+		}
 	}
 }
