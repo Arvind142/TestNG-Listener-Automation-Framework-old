@@ -53,13 +53,23 @@ public class Constants {
 		 */
 		public static final String NAME = "name";
 		/**
-		 * locator : xpath
+		 * locator : xPath
 		 */
 		public static final String XPATH = "xpath";
 		/**
-		 * locator : tagname
+		 * locator : tagName
 		 */
 		public static final String TAGNAME = "tagname";
+
+		/**
+		 * locator : className
+		 */
+		public static final String CLASS_NAME = "classname";
+
+		/**
+		 * locator : cssSelector
+		 */
+		public static final String CSS_SELECTOR = "cssSelector";
 		/**
 		 * locator : linkText
 		 */

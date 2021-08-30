@@ -5,7 +5,9 @@
 	<groupId>com.personal</groupId>
 	<artifactId>TestNG_Framework</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
 	<developers>
+
 		<developer>
 			<id>arvind</id>
 			<name>Arvind Choudhary</name>
@@ -30,11 +32,14 @@
 				<role>consultant</role>
 			</roles>
 		</developer>
+
 	</developers>
+
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
+
 	<build>
 		<plugins>
 			<!-- Below plug-in is used to execute single testng.xml file -->
@@ -52,7 +57,8 @@
 			</plugin>
 		</plugins>
 	</build>
-	<!-- Dependecny Resolution -->
+
+	<!-- dependencies Resolution -->
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager -->
 		<dependency>
@@ -66,6 +72,20 @@
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>4.0.0-alpha-6</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.seleniumhq.selenium</groupId>
+					<artifactId>htmlunit-driver</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/webdriver -->
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>webdriver</artifactId>
+			<version>2.6</version>
+			<scope>test</scope>
 		</dependency>
 
 
@@ -83,12 +103,14 @@
 			<version>7.3.0</version>
 			<scope>test</scope>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.codoid.products/fillo -->
 		<dependency>
 			<groupId>com.codoid.products</groupId>
 			<artifactId>fillo</artifactId>
 			<version>1.21</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc10 -->
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
@@ -102,12 +124,14 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.22</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-java</artifactId>
 			<version>6.9.1</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-core -->
 		<dependency>
 			<groupId>io.cucumber</groupId>
@@ -128,6 +152,7 @@
 			<artifactId>gherkin</artifactId>
 			<version>16.0.0</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-jvm -->
 		<dependency>
 			<groupId>io.cucumber</groupId>
@@ -135,13 +160,13 @@
 			<version>6.9.1</version>
 			<type>pom</type>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
 		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-surefire-plugin</artifactId>
 			<version>3.0.0-M5</version>
 		</dependency>
-
 
 	</dependencies>
 </project>

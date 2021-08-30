@@ -1,17 +1,22 @@
 package com.prac.TrashStore;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.testng.annotations.Test;
+import com.prac.framework.util.Constants;
 import com.prac.framework.util.TestNGBase;
 
 public class TestClass1 extends TestNGBase {
-	@Test(enabled = true)
+
+	@Test(enabled = false)
 	public void logPrimitiveComparison() {
 		// test case name
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName());
 		try {
 			logInfo(testName, "Execution started", "!!");
-			
+
 			// all comparison
 
 			// INT
@@ -57,13 +62,60 @@ public class TestClass1 extends TestNGBase {
 			// String
 			log(testName, "String Comparison", "ABC", "ABC");
 			log(testName, "String Comparison", "ABCD", "ABC");
-			
+
 			String[] exps = { "ABC", "ABC" };
 			String[] acts = { "ABC", "ABC" };
 			log(testName, "String[] Comparison", exps, acts);
-			String[] inacts = { "ABCD", "ABC"};
+			String[] inacts = { "ABCD", "ABC" };
 			log(testName, "String[] Comparison", exps, inacts);
 
+			logInfo(testName, "Execution stopped", "!!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logError(testName, "execution...", e.getMessage());
+		}
+
+	}
+
+	@Test(enabled = false)
+	public void seleniumBasedHtmlUnitDriver() {
+		// test case name
+		String testName = className + "." + (new Object() {
+		}.getClass().getEnclosingMethod().getName());
+		try {
+			logInfo(testName, "Execution started", "!!");
+			HtmlUnitDriver driver = web.initializeHeadlessWebDriver();
+			driver.get("http://the-internet.herokuapp.com/abtest");
+			System.out.println(web.getWebElement(driver, Constants.WebLocator.XPATH + "~" + "//h3", true, 5));
+			System.out.println(web.getWebElement(driver, Constants.WebLocator.XPATH + "~" + "//h7", false, 5) == null);
+			System.out.println(web.getWebElement(driver, Constants.WebLocator.XPATH + "~" + "//h9", false, 5));
+			Thread.sleep(2000);
+			web.destroyWebDriver(driver);
+			logInfo(testName, "Execution stopped", "!!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logError(testName, "execution...", e.getMessage());
+		}
+
+	}
+
+	@Test(enabled = true)
+	public void seleniumBasedHeadLessUI() {
+		// test case name
+		String testName = className + "." + (new Object() {
+		}.getClass().getEnclosingMethod().getName());
+		try {
+			logInfo(testName, "Execution started", "!!");
+			EdgeOptions options = new EdgeOptions();
+			options.setHeadless(true);
+			WebDriver driver = web.initializeChromiumWebBrowsers("EDGE", options);
+			driver.get("http://the-internet.herokuapp.com/abtest");
+			System.out.println(web.getWebElement(driver, Constants.WebLocator.XPATH + "~" + "//h3", false, 5));
+			System.out.println(web.getWebElement(driver, Constants.WebLocator.XPATH + "~" + "//h7", false, 5));
+			System.out.println(web.getWebElement(driver, Constants.WebLocator.XPATH + "~" + "//h3", true, 5));
+			System.out.println(web.getWebElement(driver, Constants.WebLocator.XPATH + "~" + "//h7", true, 5));
+			Thread.sleep(2000);
+			web.destroyWebDriver(driver);
 			logInfo(testName, "Execution stopped", "!!");
 		} catch (Exception e) {
 			e.printStackTrace();

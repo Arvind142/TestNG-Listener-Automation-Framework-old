@@ -9,6 +9,6 @@ import com.prac.framework.util.Library;
  * @author arvin
  *
  */
-public class BusinessFunction extends Library {
+public class BusinessFunctions extends Library {
 
 }

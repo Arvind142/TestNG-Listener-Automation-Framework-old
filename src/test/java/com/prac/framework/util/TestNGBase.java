@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import com.prac.TrashStore.BusinessFunction;
+import com.prac.TrashStore.BusinessFunctions;
 import com.prac.utils.Web;
 import com.prac.utils.API;
 import com.prac.utils.Database;
@@ -34,7 +34,7 @@ public class TestNGBase {
 	/**
 	 * businessfunction variable to work with businessFunction methods
 	 */
-	protected BusinessFunction businessFunction = new BusinessFunction();
+	protected BusinessFunctions businessFunction = new BusinessFunctions();
 
 	/***
 	 * web object to work with web methods
