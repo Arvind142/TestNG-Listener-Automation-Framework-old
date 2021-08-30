@@ -11,3 +11,4 @@
 4. listeners are used so it is suggested to always perform execution from testng.xml with listener specified above your test tag. 
 
 ## Release details:
+[Release details Attached](https://github.com/Arvind142/Temp-Testing/blob/master/Releases.properties)
