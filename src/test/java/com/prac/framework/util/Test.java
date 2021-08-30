@@ -117,9 +117,9 @@ public class Test {
 	/***
 	 * method helps in logging SKIP statement for particular test case
 	 * 
-	 * @param stepDescription step description 
-	 * @param expectedValue expected value 
-	 * @return Test class Object 
+	 * @param stepDescription step description
+	 * @param expectedValue   expected value
+	 * @return Test class Object
 	 */
 	public static synchronized Test logSkip(String stepDescription, String expectedValue) {
 		return new Test(stepDescription, expectedValue, "", Constants.Reporting.SKIP, null);
@@ -128,9 +128,9 @@ public class Test {
 	/***
 	 * to log PASS statement where expected and actuals are one and the same
 	 * 
-	 * @param stepDescription step description 
-	 * @param expectedValue expected value 
-	 * @return Test class Object 
+	 * @param stepDescription step description
+	 * @param expectedValue   expected value
+	 * @return Test class Object
 	 */
 	public static synchronized Test logPass(String stepDescription, String expectedValue) {
 		return new Test(stepDescription, expectedValue, expectedValue, Constants.Reporting.PASS, null);
@@ -148,47 +148,252 @@ public class Test {
 		return new Test(stepDescription, expectedValue, "", Constants.Reporting.FAIL, null);
 	}
 
-	/***
-	 * log statement status is evaluated based on comparison of expected and actual
+	/**
+	 * method to deal with multiple data types and log results
 	 * 
-	 * @param stepDescription step description
-	 * @param expectedValue   expected value
-	 * @param actualValue     actual value
-	 * @return Test class Object
+	 * @param <T>             Data type
+	 * @param stepDescription steps to describe current log details
+	 * @param expectedValue   expected results
+	 * @param actualValue     actual results
+	 * @return Test class object
 	 */
-	public static synchronized Test log(String stepDescription, String expectedValue, String actualValue) {
-		return new Test(stepDescription, expectedValue, actualValue,
-				(expectedValue.equals(actualValue) ? Constants.Reporting.PASS : Constants.Reporting.FAIL), null);
+	public static synchronized <T> Test log(String stepDescription, T expectedValue, T actualValue) {
+		String exp = "";
+		String act = "";
+
+		try {
+			// to work with null elements
+			if (expectedValue == null || actualValue == null) {
+				if (expectedValue == null) {
+					exp = "";
+				}
+				if (actualValue == null) {
+					act = "";
+				}
+				// if any of both of them or both are null
+				return new Test(stepDescription, exp, act,
+						(exp.equals(act) ? Constants.Reporting.PASS : Constants.Reporting.FAIL), null);
+			}
+
+			// few conversions
+			if ((expectedValue instanceof String && actualValue instanceof String)
+					|| (expectedValue instanceof String[] && actualValue instanceof String[])) {
+
+				// String comparison
+				if (expectedValue instanceof String[] && actualValue instanceof String[]) {
+					String[] exps = (String[]) expectedValue;
+					String[] acts = (String[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					String exps = String.valueOf(expectedValue);
+					String acts = String.valueOf(actualValue);
+					exp = exps;
+					act = acts;
+				}
+			} else if ((expectedValue instanceof Integer && actualValue instanceof Integer)
+					|| (expectedValue instanceof Integer[] && actualValue instanceof Integer[])) {
+
+				// Integer comparison
+				if (expectedValue instanceof Integer[] && actualValue instanceof Integer[]) {
+					Integer[] exps = (Integer[]) expectedValue;
+					Integer[] acts = (Integer[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					Integer exps = (Integer) expectedValue;
+					Integer acts = (Integer) actualValue;
+					exp = String.valueOf(exps);
+					act = String.valueOf(acts);
+				}
+			} else if ((expectedValue instanceof Long && actualValue instanceof Long)
+					|| (expectedValue instanceof Long[] && actualValue instanceof Long[])) {
+
+				// Long comparison
+				if (expectedValue instanceof Long[] && actualValue instanceof Long[]) {
+					Long[] exps = (Long[]) expectedValue;
+					Long[] acts = (Long[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					Long exps = (Long) expectedValue;
+					Long acts = (Long) actualValue;
+					exp = String.valueOf(exps);
+					act = String.valueOf(acts);
+				}
+			} else if ((expectedValue instanceof Float && actualValue instanceof Float)
+					|| (expectedValue instanceof Float[] && actualValue instanceof Float[])) {
+
+				// Float comparison
+				if (expectedValue instanceof Float[] && actualValue instanceof Float[]) {
+					Float[] exps = (Float[]) expectedValue;
+					Float[] acts = (Float[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					Float exps = (Float) expectedValue;
+					Float acts = (Float) actualValue;
+					exp = String.valueOf(exps);
+					act = String.valueOf(acts);
+				}
+			} else if ((expectedValue instanceof Double && actualValue instanceof Double)
+					|| (expectedValue instanceof Double[] && actualValue instanceof Double[])) {
+
+				// Double comparison
+				if (expectedValue instanceof Double[] && actualValue instanceof Double[]) {
+					Double[] exps = (Double[]) expectedValue;
+					Double[] acts = (Double[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					Double exps = (Double) expectedValue;
+					Double acts = (Double) actualValue;
+					exp = String.valueOf(exps);
+					act = String.valueOf(acts);
+				}
+			} else {
+				exp = "invalid dataType";
+				act = "invalid dataType";
+			}
+
+			return new Test(stepDescription, exp, act,
+					(exp.equals(act) ? Constants.Reporting.PASS : Constants.Reporting.FAIL), null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Test(stepDescription, "logging issue", e.getMessage(), Constants.Reporting.FAIL, null);
+		}
 	}
 
-	/***
-	 * log statement with status of what we received as parameter
+	/**
+	 * method to deal with multiple data types and log results
 	 * 
-	 * @param stepDescription step description
-	 * @param expectedValue   expected value
-	 * @param actualValue     actual value
-	 * @param logStatus       log status PASS/FAIL/SKIP
-	 * @return Test class Object
+	 * @param <T>             Data type
+	 * @param stepDescription steps to describe current log details
+	 * @param expectedValue   expected results
+	 * @param actualValue     actual results
+	 * @param attachment      attachment/evidence path
+	 * @return Test class object
 	 */
-	public static synchronized Test log(String stepDescription, String expectedValue, String actualValue,
-			String logStatus) {
-		return new Test(stepDescription, expectedValue, actualValue, logStatus, null);
+	public static synchronized <T> Test log(String stepDescription, T expectedValue, T actualValue, String attachment) {
+		String exp = "";
+		String act = "";
+
+		try {
+			// to work with null elements
+			if (expectedValue == null || actualValue == null) {
+				if (expectedValue == null) {
+					exp = "";
+				}
+				if (actualValue == null) {
+					act = "";
+				}
+				// if any of both of them or both are null
+				return new Test(stepDescription, exp, act,
+						(exp.equals(act) ? Constants.Reporting.PASS : Constants.Reporting.FAIL), null);
+			}
+
+			// few conversions
+			if ((expectedValue instanceof String && actualValue instanceof String)
+					|| (expectedValue instanceof String[] && actualValue instanceof String[])) {
+
+				// String comparison
+				if (expectedValue instanceof String[] && actualValue instanceof String[]) {
+					String[] exps = (String[]) expectedValue;
+					String[] acts = (String[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					String exps = (String) expectedValue;
+					String acts = (String) actualValue;
+					exp = exps;
+					act = acts;
+				}
+			} else if ((expectedValue instanceof Integer && actualValue instanceof Integer)
+					|| (expectedValue instanceof Integer[] && actualValue instanceof Integer[])) {
+
+				// Integer comparison
+				if (expectedValue instanceof Integer[] && actualValue instanceof Integer[]) {
+					Integer[] exps = (Integer[]) expectedValue;
+					Integer[] acts = (Integer[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					Integer exps = (Integer) expectedValue;
+					Integer acts = (Integer) actualValue;
+					exp = String.valueOf(exps);
+					act = String.valueOf(acts);
+				}
+			} else if ((expectedValue instanceof Long && actualValue instanceof Long)
+					|| (expectedValue instanceof Long[] && actualValue instanceof Long[])) {
+
+				// Long comparison
+				if (expectedValue instanceof Long[] && actualValue instanceof Long[]) {
+					Long[] exps = (Long[]) expectedValue;
+					Long[] acts = (Long[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					Long exps = (Long) expectedValue;
+					Long acts = (Long) actualValue;
+					exp = String.valueOf(exps);
+					act = String.valueOf(acts);
+				}
+			} else if ((expectedValue instanceof Float && actualValue instanceof Float)
+					|| (expectedValue instanceof Float[] && actualValue instanceof Float[])) {
+
+				// Float comparison
+				if (expectedValue instanceof Float[] && actualValue instanceof Float[]) {
+					Float[] exps = (Float[]) expectedValue;
+					Float[] acts = (Float[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					Float exps = (Float) expectedValue;
+					Float acts = (Float) actualValue;
+					exp = String.valueOf(exps);
+					act = String.valueOf(acts);
+				}
+			} else if ((expectedValue instanceof Double && actualValue instanceof Double)
+					|| (expectedValue instanceof Double[] && actualValue instanceof Double[])) {
+
+				// Double comparison
+				if (expectedValue instanceof Double[] && actualValue instanceof Double[]) {
+					Double[] exps = (Double[]) expectedValue;
+					Double[] acts = (Double[]) actualValue;
+					exp = Test.getPrintableStringOfArray(exps);
+					act = Test.getPrintableStringOfArray(acts);
+				} else {
+					Double exps = (Double) expectedValue;
+					Double acts = (Double) actualValue;
+					exp = String.valueOf(exps);
+					act = String.valueOf(acts);
+				}
+			} else {
+				exp = "invalid dataType";
+				act = "invalid dataType";
+			}
+
+			return new Test(stepDescription, exp, act,
+					(exp.equals(act) ? Constants.Reporting.PASS : Constants.Reporting.FAIL), attachment);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Test(stepDescription, "logging issue", e.getMessage(), Constants.Reporting.FAIL, attachment);
+		}
 	}
 
-	/***
+	/**
+	 * return printable value of any data type class
 	 * 
-	 * log statement with status of what we received as parameter
-	 * 
-	 * @param stepDescription step description
-	 * @param expectedValue   expected value
-	 * @param actualValue     actual value
-	 * @param logStatus       log status PASS/FAIL/SKIP
-	 * @param attachment      path of attachment
-	 * @return Test class Object
+	 * @param t any element arrayClass
+	 * @return string equivalent of values present in array
 	 */
-	public static synchronized Test log(String stepDescription, String expectedValue, String actualValue,
-			String logStatus, String attachment) {
-		return new Test(stepDescription, expectedValue, actualValue, logStatus, attachment);
+	public static <T> String getPrintableStringOfArray(T[] t) {
+		String ret = "[";
+		for (T element : t) {
+			ret += "[ " + String.valueOf(element) + " ]";
+		}
+		ret += "]";
+		return ret;
 	}
 
 	/***

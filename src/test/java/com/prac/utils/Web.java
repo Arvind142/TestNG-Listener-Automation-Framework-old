@@ -2,12 +2,14 @@ package com.prac.utils;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 import com.google.common.base.Function;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -25,8 +27,8 @@ public class Web {
 	 * @param browserName browser name for which we want to initialize driver
 	 * @return webdriver variable
 	 */
-	public synchronized WebDriver initializeWebDriver(String browserName) {
-		WebDriver driver = null;
+	public synchronized RemoteWebDriver initializeWebDriver(String browserName) {
+		RemoteWebDriver driver = null;
 		try {
 			switch (browserName.toUpperCase()) {
 			case "CHROME":
@@ -48,10 +50,12 @@ public class Web {
 				driver = new InternetExplorerDriver();
 				break;
 			default:
-				throw new Exception("Invalid BrowserName");
+				throw new InvalidArgumentException("Invalid BrowserName");
 			}
-		} catch (Exception e) {
+		} catch (InvalidArgumentException e) {
 			e.printStackTrace();
+			driver = null;
+			return driver;
 		}
 		return driver;
 	}
@@ -62,7 +66,7 @@ public class Web {
 	 * @param driver web driver variable
 	 * @param url    url to open
 	 */
-	public void openURL(WebDriver driver, String url) {
+	public void openURL(RemoteWebDriver driver, String url) {
 		driver.get(url);
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -73,8 +77,8 @@ public class Web {
 	 * 
 	 * @param driver
 	 */
-	public void waitForPageLoad(WebDriver driver) {
-		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(20))
+	public void waitForPageLoad(RemoteWebDriver driver) {
+		FluentWait<RemoteWebDriver> wait = new FluentWait<RemoteWebDriver>(driver).withTimeout(Duration.ofSeconds(20))
 				.pollingEvery(Duration.ofSeconds(1)).ignoring(Exception.class);
 		wait.until(new Function<WebDriver, Boolean>() {
 			@Override
@@ -89,7 +93,7 @@ public class Web {
 	 * 
 	 * @param driver web driver object
 	 */
-	public void destroyWebDriver(WebDriver driver) {
+	public void destroyWebDriver(RemoteWebDriver driver) {
 		if (driver != null)
 			driver.quit();
 	}

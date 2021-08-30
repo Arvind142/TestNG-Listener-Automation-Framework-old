@@ -25,10 +25,9 @@ public class FlowClass extends TestNGBase {
 		try {
 			logInfo(testName, "VAL1", "Browser started");
 			Thread.sleep(15000);
-			log(testName, "Navigation", "Successs Expected", "Success found", Constants.Reporting.PASS);
+			logPass(testName, "Navigation", "Successs");
 		} catch (Exception e) {
-			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
-					Constants.Reporting.FAIL);
+			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage());
 		}
 	}
 
@@ -45,10 +44,9 @@ public class FlowClass extends TestNGBase {
 		try {
 			logInfo(testName, "VAL1", "Browser started");
 			Thread.sleep(15000);
-			log(testName, "Navigation", "Successs Expected", "Success found", Constants.Reporting.PASS);
+			logPass(testName, "Navigation", "Successs");
 		} catch (Exception e) {
-			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
-					Constants.Reporting.FAIL);
+			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage());
 		}
 	}
 
@@ -67,13 +65,12 @@ public class FlowClass extends TestNGBase {
 			logInfo(testName, "VAL1", "INFO-LOG");
 			Thread.sleep(5000);
 			log(testName, "VAL2", "B", "B");
-			log(testName, "VAL3", "A", "A", Constants.Reporting.PASS);
-			log(testName, "VAL4", "C", "D", Constants.Reporting.PASS, "https://www.google.com");
+			log(testName, "VAL3", "A", "A");
+			log(testName, "VAL4", "C", "D", "https://www.google.com");
 		} catch (SkipException e) {
-			log(testName, "Skip Exception", "", "", Constants.Reporting.SKIP);
+			logSkip(testName, "Skip Exception", "");
 		} catch (Exception e) {
-			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
-					Constants.Reporting.FAIL);
+			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage());
 		}
 	}
 
@@ -94,10 +91,9 @@ public class FlowClass extends TestNGBase {
 		try {
 			throw new Exception("Some Error");
 		} catch (SkipException e) {
-			log(testName, "Skip Exception", "", "", Constants.Reporting.SKIP);
+			logSkip(testName, "Skip Exception", "");
 		} catch (Exception e) {
-			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
-					Constants.Reporting.FAIL);
+			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage());
 		}
 	}
 
@@ -110,10 +106,9 @@ public class FlowClass extends TestNGBase {
 			Thread.sleep(5000);
 			System.out.println("Method passed!");
 		} catch (SkipException e) {
-			log(testName, "Skip Exception", "", "", Constants.Reporting.SKIP);
+			logSkip(testName, "Skip Exception", "");
 		} catch (Exception e) {
-			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
-					Constants.Reporting.FAIL);
+			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage());
 		}
 	}
 
@@ -127,13 +122,12 @@ public class FlowClass extends TestNGBase {
 			for (int i = 0; i < 10; i++) {
 				swap(i);
 				// something
-				log(testName, "TimeOUT timeoutExceptionMethod", "Worked", "", Constants.Reporting.PASS);
+				logPass(testName, "TimeOUT timeoutExceptionMethod", "");
 			}
 		} catch (SkipException e) {
-			log(testName, "Skip Exception", "", "", Constants.Reporting.SKIP);
+			logSkip(testName, "Skip Exception", "");
 		} catch (Exception e) {
-			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage(),
-					Constants.Reporting.FAIL);
+			log(testName, "Error found", "No exception expected", "exception found: " + e.getMessage());
 		}
 	}
 
@@ -152,7 +146,7 @@ public class FlowClass extends TestNGBase {
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName()) + "." + tcName;
 		for (int i = 0; i < 10; i++) {
-			log(testName, "TimeOUT Exception", "Worked", "", Constants.Reporting.PASS);
+			log(testName, "TimeOUT Exception", "Worked", "");
 		}
 		System.out.println("Method passed!");
 

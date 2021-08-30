@@ -152,45 +152,32 @@ public class TestNGBase {
 		addLogToMap(testName, log);
 	}
 
-	/***
-	 * log statement which evaluates status of log with expected and actual value
+	/**
+	 * to log result
 	 * 
+	 * @param <T>      any data type can be array/list/set
 	 * @param testName test caseName
 	 * @param steps    step description
 	 * @param expected expected value
 	 * @param actual   actual value
 	 */
-	public synchronized void log(String testName, String steps, String expected, String actual) {
+	public synchronized <T> void log(String testName, String steps, T expected, T actual) {
 		log = Test.log(steps, expected, actual);
 		addLogToMap(testName, log);
 	}
 
 	/***
-	 * log statement status is taken as it is from method parameter variable status
+	 * to log result
 	 * 
-	 * @param testName test caseName
-	 * @param steps    step description
-	 * @param expected expected value
-	 * @param actual   actual value
-	 * @param status   log status
-	 */
-	public synchronized void log(String testName, String steps, String expected, String actual, String status) {
-		log = Test.log(steps, expected, actual, status);
-		addLogToMap(testName, log);
-	}
-
-	/***
-	 * 
-	 * @param testName   test caseName
+	 * @param <T>        any data type can be array/list/set
+	 * @param testName   test case name
 	 * @param steps      step description
-	 * @param expected   expected value
-	 * @param actual     actual value
-	 * @param status     log status
-	 * @param attachmant path where evidence is extracted
+	 * @param expected   expected data
+	 * @param actual     actual data
+	 * @param attachmant evidence path
 	 */
-	public synchronized void log(String testName, String steps, String expected, String actual, String status,
-			String attachmant) {
-		log = Test.log(steps, expected, actual, status, attachmant);
+	public synchronized <T> void log(String testName, String steps, T expected, T actual, String attachmant) {
+		log = Test.log(steps, expected, actual, attachmant);
 		addLogToMap(testName, log);
 	}
 
