@@ -1,6 +1,8 @@
 package com.prac.utils;
 
-import org.openqa.selenium.remote.RemoteWebDriver;
+import java.net.URL;
+
+import org.openqa.selenium.winium.DesktopOptions;
 import org.openqa.selenium.winium.WiniumDriver;
 
 /***
@@ -17,8 +19,6 @@ public class Window {
 	private String driverPath = "Drivers/Winium.Desktop.Driver.exe";
 
 	private Process winiumProcess = null;
-
-	private RemoteWebDriver winiumDriver = null;
 
 	/***
 	 * method to run winium driver Process
@@ -50,6 +50,25 @@ public class Window {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+
+	/**
+	 * method to start winium driver with serverurl and application path
+	 * 
+	 * @param serverUrl
+	 * @param applicationPath
+	 * @return winium driver which script developer can use to work with windows
+	 *         automation
+	 */
+	public WiniumDriver startWiniumDriver(String serverUrl, String applicationPath) {
+		DesktopOptions options = new DesktopOptions();
+		options.setApplicationPath(applicationPath);
+		try {
+			return new WiniumDriver(new URL(serverUrl), options);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 

@@ -47,8 +47,7 @@ public class Library {
 			if (!new File(environmentFolder).exists())
 				new File(environmentFolder).mkdirs();
 		} catch (FileNotFoundException e) {
-			System.out.println("applicaiton level property file missing!");
-
+			System.out.println("application level property file missing!");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -71,7 +70,6 @@ public class Library {
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("environment level property file missing!");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

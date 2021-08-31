@@ -4,7 +4,6 @@ import org.openqa.selenium.WebDriver;
 import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import com.prac.framework.util.Constants;
 import com.prac.framework.util.TestNGBase;
 
 /**

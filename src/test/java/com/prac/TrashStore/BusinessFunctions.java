@@ -10,5 +10,5 @@ import com.prac.framework.util.Library;
  *
  */
 public class BusinessFunctions extends Library {
-
+	
 }
