@@ -129,7 +129,7 @@ public class ListenerClass implements ITestListener {
 				"------------------------------------Case Execution Finish------------------------------------");
 		suiteStatus = getSuiteStatus();
 		for (String s : suiteStatus.keySet()) {
-			System.out.println(s + "-->" + suiteStatus.get(s));
+			System.out.println(s + ": " + suiteStatus.get(s));
 		}
 
 		// creating html report

@@ -21,9 +21,11 @@ import java.text.SimpleDateFormat;
 public class HTMLReporting {
 
 	// few required vars
-	final String baseHtmlPath = "./HTMLReportFormat/Index.html";
-	final String baseHtmlFolder = "./HTMLReportFormat/";
-	final String baseCssFolder = "./HTMLReportFormat/css/";
+	final String baseHtmlPath = "HTMLReportFormat/Index.html";
+	final String baseHtmlFolder = "HTMLReportFormat/";
+
+	// ftp details
+	FtpFileUpload ftp = null;
 
 	// ui date format
 	final SimpleDateFormat uidateFormat = ListenerClass.reportUiDateFormat;
@@ -47,6 +49,9 @@ public class HTMLReporting {
 		// edit html
 		File htmlFile = new File(reportFolder.getAbsolutePath() + "/index.html");
 		updateHTML(htmlFile, context);
+
+		ftp = new FtpFileUpload(applicationLevelProperty);
+		fileUploadFtp(reportFolder);
 	}
 
 	/**
@@ -59,7 +64,7 @@ public class HTMLReporting {
 		try {
 			InputStream ins = getClass().getClassLoader().getResource("ApplicationLevelConfig.properties").openStream();
 			applicationLevelProperty.load(ins);
-			File environmentFolder = new File("./test-output/" + applicationLevelProperty.getProperty("Environment"));
+			File environmentFolder = new File("test-output/" + applicationLevelProperty.getProperty("Environment"));
 			if (!environmentFolder.exists()) {
 				environmentFolder.mkdirs();
 			}
@@ -86,20 +91,8 @@ public class HTMLReporting {
 			File htmlFolder = new File(baseHtmlFolder);
 			File destFile = null;
 			for (File file : htmlFolder.listFiles()) {
-				if (file.isDirectory()) {
-					for (File subfile : file.listFiles()) {
-						destFile = new File(reportingFolder.getAbsolutePath() + "/" + file.getName());
-						if (!destFile.exists()) {
-							destFile.mkdirs();
-						}
-						destFile = new File(
-								reportingFolder.getAbsolutePath() + "/" + file.getName() + "/" + subfile.getName());
-						FileUtils.copyFile(subfile, destFile);
-					}
-				} else {
-					destFile = new File(reportingFolder.getAbsolutePath() + "/" + file.getName());
-					FileUtils.copyFile(file, destFile);
-				}
+				destFile = new File(reportingFolder.getAbsolutePath() + "/" + file.getName());
+				FileUtils.copyFile(file, destFile);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -264,7 +257,7 @@ public class HTMLReporting {
 				endTime = ListenerClass.testTimeStamps.get(tc).get(1);
 				link = link.replace("{startTime}", uidateFormat.format(startTime));
 				link = link.replace("{endTime}", uidateFormat.format(endTime));
-				link +=", timeTaken: "+ getTimeDifference(startTime, endTime);
+				link += ", timeTaken: " + getTimeDifference(startTime, endTime);
 			}
 		}
 		return link;
@@ -320,6 +313,37 @@ public class HTMLReporting {
 			} else {
 				return (String.valueOf(seconds) + "s");
 			}
+		}
+	}
+
+	public void fileUploadFtp(File reportingFolderpath) {
+		try {
+
+			if (!String.valueOf(applicationLevelProperty.get("FTPUpload")).equalsIgnoreCase("yes")) {
+				return;
+			}
+
+			if (ftp.connect()) {
+				if (ftp.login()) {
+					if (ftp.createReportDirectory()) {
+						if (ftp.fileUpload(reportingFolderpath)) {
+							System.out.println("FTP: File upload Passed");
+
+							ftp.close();
+						} else {
+							System.out.println("FTP: File upload failed");
+						}
+					} else {
+						throw new Exception("reportign directory creation failed");
+					}
+				} else {
+					throw new Exception("login failed");
+				}
+			} else {
+				throw new Exception("Connection refused");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

@@ -3,7 +3,6 @@ package com.prac.TrashStore;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -13,6 +12,8 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 import com.prac.framework.util.TestNGBase;
+import com.prac.TrashStore.OR.the_internet;
+import com.prac.TrashStore.OR.guru99;
 
 public class TestClass1 extends TestNGBase {
 
@@ -93,9 +94,9 @@ public class TestClass1 extends TestNGBase {
 			logInfo(testName, "Execution started", "!!");
 			HtmlUnitDriver driver = web.initializeHeadlessWebDriver();
 			driver.get("http://the-internet.herokuapp.com/abtest");
-			System.out.println(web.getWebElement(driver, OR.the_internet.ab.header3, true, 5));
-			System.out.println(web.getWebElement(driver, OR.the_internet.ab.header7, false, 5) == null);
-			System.out.println(web.getWebElement(driver, OR.the_internet.ab.header9, false, 5));
+			System.out.println(web.getWebElement(driver, the_internet.ab.header3, true, 5));
+			System.out.println(web.getWebElement(driver, the_internet.ab.header7, false, 5) == null);
+			System.out.println(web.getWebElement(driver, the_internet.ab.header9, false, 5));
 			Thread.sleep(2000);
 			web.destroyWebDriver(driver);
 			logInfo(testName, "Execution stopped", "!!");
@@ -115,7 +116,7 @@ public class TestClass1 extends TestNGBase {
 			logInfo(testName, "Execution started", "!!");
 			// initialize
 			EdgeOptions options = new EdgeOptions();
-//			options.setHeadless(true);
+			options.setHeadless(true);
 			WebDriver driver = web.initializeChromiumWebBrowsers("EDGE", options);
 			driver.get("http://the-internet.herokuapp.com/abtest");
 			// screenshot
@@ -123,48 +124,48 @@ public class TestClass1 extends TestNGBase {
 			FileUtils.copyFile(s, new File("tutorialpoint.png"));
 
 			// send values to field
-			driver.get("http://the-internet.herokuapp.com/login");
+			web.openURL(driver, "http://the-internet.herokuapp.com/login");
 			System.out.println(driver.getCurrentUrl());
 
-			web.getWebElement(driver, OR.the_internet.login.username, true, 5)
-					.sendKeys(businessFunction.environmentLevelProperty.get("login.username").toString());
+			web.sendKeys(driver, the_internet.login.username,
+					businessFunction.environmentLevelProperty.get("login.username").toString(), true, 5);
 
-			web.getWebElement(driver, OR.the_internet.login.password, true, 5)
-					.sendKeys(businessFunction.environmentLevelProperty.get("login.password").toString());
+			web.sendKeys(driver, the_internet.login.password,
+					businessFunction.environmentLevelProperty.get("login.password").toString(), true, 5);
 
-			web.getWebElement(driver, OR.the_internet.login.submitButton, true, 5).click();
+			web.getWebElement(driver, the_internet.login.submitButton, true, 5).click();
 
 			System.out.println(driver.getCurrentUrl());
-			
-			System.out.println(web.getWebElement(driver, OR.the_internet.secure.header, true, 3).getText());
+
+			System.out.println(web.getWebElement(driver, the_internet.secure.header, true, 3).getText());
 			// drop down
 
 			// action
 			driver.get("http://demo.guru99.com/test/drag_drop.html");
 
 			// Element(BANK) which need to drag.
-			WebElement From1 = driver.findElement(By.xpath("//*[@id='credit2']/a"));
+			WebElement From1 = web.getWebElement(driver, guru99.test.drag_and_drop.credit2, true, 5);
 
 			// Element(DEBIT SIDE) on which need to drop.
-			WebElement To1 = driver.findElement(By.xpath("//*[@id='bank']/li"));
+			WebElement To1 = web.getWebElement(driver, guru99.test.drag_and_drop.bank, true, 5);
 
 			// Element(SALES) which need to drag.
-			WebElement From2 = driver.findElement(By.xpath("//*[@id='credit1']/a"));
+			WebElement From2 = web.getWebElement(driver, guru99.test.drag_and_drop.credit1, true, 5);
 
 			// Element(CREDIT SIDE) on which need to drop.
-			WebElement To2 = driver.findElement(By.xpath("//*[@id='loan']/li"));
+			WebElement To2 = web.getWebElement(driver, guru99.test.drag_and_drop.loan, true, 5);
 
 			// Element(500) which need to drag.
-			WebElement From3 = driver.findElement(By.xpath("//*[@id='fourth']/a"));
+			WebElement From3 = web.getWebElement(driver, guru99.test.drag_and_drop.fourth, true, 5);
 
 			// Element(DEBIT SIDE) on which need to drop.
-			WebElement To3 = driver.findElement(By.xpath("//*[@id='amt7']/li"));
+			WebElement To3 = web.getWebElement(driver, guru99.test.drag_and_drop.amt7, true, 5);
 
 			// Element(500) which need to drag.
-			WebElement From4 = driver.findElement(By.xpath("//*[@id='fourth']/a"));
+			WebElement From4 = web.getWebElement(driver, guru99.test.drag_and_drop.fourth, true, 5);
 
 			// Element(CREDIT SIDE) on which need to drop.
-			WebElement To4 = driver.findElement(By.xpath("//*[@id='amt8']/li"));
+			WebElement To4 = web.getWebElement(driver, guru99.test.drag_and_drop.amt8, true, 5);
 
 			// Using Action class for drag and drop.
 			Actions act = new Actions(driver);
@@ -182,7 +183,7 @@ public class TestClass1 extends TestNGBase {
 			act.dragAndDrop(From4, To4).build().perform();
 
 			// Verifying the Perfect! message.
-			if (driver.findElement(By.xpath("//a[contains(text(),'Perfect')]")).isDisplayed()) {
+			if (web.getWebElement(driver, guru99.test.drag_and_drop.perfectHyperLink, true, 3).isDisplayed()) {
 				System.out.println("Perfect Displayed !!!");
 			} else {
 				System.out.println("Perfect not Displayed !!!");

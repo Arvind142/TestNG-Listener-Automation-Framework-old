@@ -35,8 +35,8 @@ public class Web {
 	 * @param browserName browser name for which we want to initialize driver
 	 * @return webdriver variable
 	 */
-	public synchronized RemoteWebDriver initializeWebDriver(String browserName) {
-		RemoteWebDriver driver = null;
+	public synchronized WebDriver initializeWebDriver(String browserName) {
+		WebDriver driver = null;
 		try {
 			switch (browserName.toUpperCase()) {
 			case "CHROME":
@@ -87,7 +87,7 @@ public class Web {
 				break;
 			case "EDGE":
 			case "MSEDGE":
-				WebDriverManager.edgedriver().setup();
+				WebDriverManager.edgedriver().driverVersion("92.0.902.84").setup();
 				EdgeOptions eOptions = (EdgeOptions) options;
 				driver = new EdgeDriver(eOptions);
 				break;
@@ -108,7 +108,7 @@ public class Web {
 	 * @param driver web driver variable
 	 * @param url    url to open
 	 */
-	public void openURL(RemoteWebDriver driver, String url) {
+	public void openURL(WebDriver driver, String url) {
 		driver.get(url);
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -203,7 +203,7 @@ public class Web {
 	/***
 	 * to get webElement present on UI
 	 * 
-	 * @param driver         WebDriver parameter
+	 * @param driver         WebDriver reference
 	 * @param locator        element locator
 	 * @param throwException boolean var to return exception when exception found or
 	 *                       skip exception
@@ -230,4 +230,64 @@ public class Web {
 			}
 		}
 	}
+
+	/**
+	 * to get webelement
+	 * 
+	 * @param driver         webdriver reference
+	 * @param locator        POM object (by reference)
+	 * @param throwException true implies throw exception in problem else return
+	 *                       null
+	 * @param timeOUT        timeout
+	 * @return webElement
+	 */
+
+	public WebElement getWebElement(WebDriver driver, By locator, Boolean throwException, Integer timeOUT) {
+		WebElement element = null;
+		try {
+			Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOUT))
+					.pollingEvery(Duration.ofSeconds(1));
+			element = wait.until(new Function<WebDriver, WebElement>() {
+				@Override
+				public WebElement apply(WebDriver input) {
+					return driver.findElement(locator);
+				}
+			});
+			return element;
+		} catch (Exception e) {
+			if (throwException) {
+				throw e;
+			} else {
+				return null;
+			}
+		}
+	}
+
+	/***
+	 * method to send values to fields
+	 * 
+	 * @param driver         webdriver reference
+	 * @param locator        element identifier
+	 * @param text           text to send
+	 * @param throwException rue if you want exception in case of some exception or
+	 *                       false to return null in case of exception
+	 * @param timeOUT        time to wait for element to be visible
+	 * @return boolean status of true - worked and false some issue.
+	 */
+	public boolean sendKeys(WebDriver driver, String locator, String text, Boolean throwException, Integer timeOUT) {
+		WebElement element = null;
+		try {
+			element = getWebElement(driver, locator, throwException, timeOUT);
+			element.clear();
+			element.sendKeys(text);
+			return true;
+		} catch (Exception e) {
+			if (throwException) {
+				throw e;
+			} else {
+				return false;
+			}
+		}
+	}
+
 }
