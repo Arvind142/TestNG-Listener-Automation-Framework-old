@@ -15,20 +15,17 @@
 ## Release details:
 [Release details Attached](https://github.com/Arvind142/Temp-Testing/blob/master/Releases.properties)
 
+### Branches
+1.	Main -  Original Code(core classes which deals with framework initialization and data collection and default reporting.
+2.	BDD-demo - outdated branch
 
 ##### About:
-I started in Feb-21 with an idea to create one framework which would haev below point/advantages:
+Arvind Choudhary,  25 Learner.
+
+I started in Feb-21 with an idea to create one framework where i could implement below points:
 1. Parallel execution.
 2. Custom reporting.
-3. BDT.
+3. Ability to test Windows/Web/DB.
+4. BDT.
 
-
-
-
-
-
-
-
-
-~~I created~~ 
-we created 🙌.
+~~I created~~ we created 🙌.
