@@ -1,4 +1,6 @@
-# Testing Framework:
+
+# Testing Framework
+
 ## Folder Structure 
  1. com.prac.framework.utils - holds **Framework** related classes and should not be edited/updated.
  2. com.prac.utils - It is an utility package which holds classes like Web.java(to work with web based automation - tool: selenium), Windows.java( to work with windows based application - tool: winium), API.java( API based automation - libraries: RestAssured) which will aid users in creation of scripts faster
@@ -14,7 +16,19 @@
 [Release details Attached](https://github.com/Arvind142/Temp-Testing/blob/master/Releases.properties)
 
 
+##### About:
+I started in Feb-21 with an idea to create one framework which would haev below point/advantages:
+1. Parallel execution.
+2. Custom reporting.
+3. BDT.
 
 
 
-#####Quick Edit
+
+
+
+
+
+
+~~I created~~ 
+we created 🙌.
