@@ -16,10 +16,10 @@
 [Release details Attached](https://github.com/Arvind142/Temp-Testing/blob/master/Releases.properties)
 
 ### Branches
-1.	Main -  Original Code(core classes which deals with framework initialization and data collection and default reporting.
-2.	BDD-demo - outdated branch
+1.	**Main** -  Original Code(core classes which deals with framework initialization and data collection and default reporting.
+2.	**BDD-demo** - outdated branch
 
-##### About:
+#### About
 Arvind Choudhary,  25 Learner.
 
 I started in Feb-21 with an idea to create one framework where i could implement below points:
