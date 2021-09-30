@@ -20,12 +20,8 @@
 2.	**BDD-demo** - outdated branch
 
 #### About
-Arvind Choudhary,  25 Learner.
-
 I started in Feb-21 with an idea to create one framework where i could implement below points:
 1. Parallel execution.
 2. Custom reporting.
 3. Ability to test Windows/Web/DB.
 4. BDT.
-
-~~I created~~ we created 🙌.
