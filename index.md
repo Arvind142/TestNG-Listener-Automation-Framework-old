@@ -25,3 +25,5 @@ I started in Feb-21 with an idea to create one framework where i could implement
 2. Custom reporting.
 3. Ability to test Windows/Web/DB.
 4. BDT.
+
+<img src="img/Arvind-Choudhary-V0.0.1.png" alt="logo" width="300" height="60"/>
