@@ -1,7 +1,6 @@
 package com.prac.framework.util;
 
 import java.util.List;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -21,38 +20,16 @@ public class Library {
 	/**
 	 * application level property variables :)
 	 */
-	public final Properties applicationLevelProperty = new Properties();
+	public Properties applicationLevelProperty = new Properties();
 	/**
 	 * environment level property variables :)
 	 */
-	public final Properties environmentLevelProperty = new Properties();
+	public Properties environmentLevelProperty = new Properties();
 
 	/**
 	 * variables to get data from property file
 	 */
-	public String environmentFolder;
-
-	/**
-	 * This method will help in reading application level property
-	 */
-	public void readApplicaitonLevelProperty() {
-		try (InputStream ins = getClass().getClassLoader().getResource("ApplicationLevelConfig.properties")
-				.openStream()) {
-			applicationLevelProperty.load(ins);
-			if (applicationLevelProperty.keySet().size() == 0) {
-				throw new Exception("Invalid Property file");
-			}
-			// creating folder if not present
-			environmentFolder = "./test-output/" + applicationLevelProperty.get("Environment") + "/";
-			if (!new File(environmentFolder).exists())
-				new File(environmentFolder).mkdirs();
-		} catch (FileNotFoundException e) {
-			System.out.println("application level property file missing!");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
+	public String environmentFolder = ListenerClass.environmentOutputFolder;
 
 	/***
 	 * readEnvironmentLevelProperty is used to read environment properties. each
@@ -60,6 +37,11 @@ public class Library {
 	 * categorized. this methods read and stores value in environment variable
 	 */
 	public void readEnvironmentLevelProperty() {
+		// reading properties from listener class, instead of doing complete process
+		// again of locating,reading and folder creation
+		applicationLevelProperty = (Properties) ListenerClass.applicationLevelProperty.clone();
+
+		// reading env file
 		try (InputStream ins = getClass().getClassLoader()
 				.getResource(applicationLevelProperty.getProperty("Environment") + "/"
 						+ applicationLevelProperty.getProperty("ApplicationName") + ".properties")

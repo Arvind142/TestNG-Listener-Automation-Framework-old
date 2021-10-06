@@ -9,7 +9,7 @@ import java.util.Calendar;
  * @author arvin
  *
  */
-public class Test {
+public class TestLog {
 
 	/**
 	 * holds step description
@@ -51,7 +51,8 @@ public class Test {
 	 * @param logStatus       log status i.e. PASS/FAIL/SKIP
 	 * @param attachment      url of attachment
 	 */
-	public Test(String stepDescription, String expectedValue, String actualValue, String logStatus, String attachment) {
+	public TestLog(String stepDescription, String expectedValue, String actualValue, String logStatus,
+			String attachment) {
 		super();
 		this.stepDescription = stepDescription;
 		this.expectedValue = expectedValue;
@@ -110,8 +111,8 @@ public class Test {
 	 * @param expectedValue   additional information
 	 * @return Test class Object
 	 */
-	public static synchronized Test logInfo(String stepDescription, String expectedValue) {
-		return new Test(stepDescription, expectedValue, "", Constants.Reporting.INFO, null);
+	public static synchronized TestLog logInfo(String stepDescription, String expectedValue) {
+		return new TestLog(stepDescription, expectedValue, "", Constants.Reporting.INFO, null);
 	}
 
 	/***
@@ -121,8 +122,8 @@ public class Test {
 	 * @param expectedValue   expected value
 	 * @return Test class Object
 	 */
-	public static synchronized Test logSkip(String stepDescription, String expectedValue) {
-		return new Test(stepDescription, expectedValue, "", Constants.Reporting.SKIP, null);
+	public static synchronized TestLog logSkip(String stepDescription, String expectedValue) {
+		return new TestLog(stepDescription, expectedValue, "", Constants.Reporting.SKIP, null);
 	}
 
 	/***
@@ -132,8 +133,8 @@ public class Test {
 	 * @param expectedValue   expected value
 	 * @return Test class Object
 	 */
-	public static synchronized Test logPass(String stepDescription, String expectedValue) {
-		return new Test(stepDescription, expectedValue, expectedValue, Constants.Reporting.PASS, null);
+	public static synchronized TestLog logPass(String stepDescription, String expectedValue) {
+		return new TestLog(stepDescription, expectedValue, expectedValue, Constants.Reporting.PASS, null);
 	}
 
 	/***
@@ -144,8 +145,8 @@ public class Test {
 	 *                        statement
 	 * @return Test class Object
 	 */
-	public static synchronized Test logError(String stepDescription, String expectedValue) {
-		return new Test(stepDescription, expectedValue, "", Constants.Reporting.FAIL, null);
+	public static synchronized TestLog logError(String stepDescription, String expectedValue) {
+		return new TestLog(stepDescription, expectedValue, "", Constants.Reporting.FAIL, null);
 	}
 
 	/**
@@ -157,7 +158,7 @@ public class Test {
 	 * @param actualValue     actual results
 	 * @return Test class object
 	 */
-	public static synchronized <T> Test log(String stepDescription, T expectedValue, T actualValue) {
+	public static synchronized <T> TestLog log(String stepDescription, T expectedValue, T actualValue) {
 		String exp = "";
 		String act = "";
 
@@ -171,7 +172,7 @@ public class Test {
 					act = "";
 				}
 				// if any of both of them or both are null
-				return new Test(stepDescription, exp, act,
+				return new TestLog(stepDescription, exp, act,
 						(exp.equals(act) ? Constants.Reporting.PASS : Constants.Reporting.FAIL), null);
 			}
 
@@ -183,8 +184,8 @@ public class Test {
 				if (expectedValue instanceof String[] && actualValue instanceof String[]) {
 					String[] exps = (String[]) expectedValue;
 					String[] acts = (String[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					String exps = String.valueOf(expectedValue);
 					String acts = String.valueOf(actualValue);
@@ -198,8 +199,8 @@ public class Test {
 				if (expectedValue instanceof Integer[] && actualValue instanceof Integer[]) {
 					Integer[] exps = (Integer[]) expectedValue;
 					Integer[] acts = (Integer[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					Integer exps = (Integer) expectedValue;
 					Integer acts = (Integer) actualValue;
@@ -213,8 +214,8 @@ public class Test {
 				if (expectedValue instanceof Long[] && actualValue instanceof Long[]) {
 					Long[] exps = (Long[]) expectedValue;
 					Long[] acts = (Long[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					Long exps = (Long) expectedValue;
 					Long acts = (Long) actualValue;
@@ -228,8 +229,8 @@ public class Test {
 				if (expectedValue instanceof Float[] && actualValue instanceof Float[]) {
 					Float[] exps = (Float[]) expectedValue;
 					Float[] acts = (Float[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					Float exps = (Float) expectedValue;
 					Float acts = (Float) actualValue;
@@ -243,8 +244,8 @@ public class Test {
 				if (expectedValue instanceof Double[] && actualValue instanceof Double[]) {
 					Double[] exps = (Double[]) expectedValue;
 					Double[] acts = (Double[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					Double exps = (Double) expectedValue;
 					Double acts = (Double) actualValue;
@@ -256,11 +257,11 @@ public class Test {
 				act = "invalid dataType";
 			}
 
-			return new Test(stepDescription, exp, act,
+			return new TestLog(stepDescription, exp, act,
 					(exp.equals(act) ? Constants.Reporting.PASS : Constants.Reporting.FAIL), null);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new Test(stepDescription, "logging issue", e.getMessage(), Constants.Reporting.FAIL, null);
+			return new TestLog(stepDescription, "logging issue", e.getMessage(), Constants.Reporting.FAIL, null);
 		}
 	}
 
@@ -274,7 +275,8 @@ public class Test {
 	 * @param attachment      attachment/evidence path
 	 * @return Test class object
 	 */
-	public static synchronized <T> Test log(String stepDescription, T expectedValue, T actualValue, String attachment) {
+	public static synchronized <T> TestLog log(String stepDescription, T expectedValue, T actualValue,
+			String attachment) {
 		String exp = "";
 		String act = "";
 
@@ -288,7 +290,7 @@ public class Test {
 					act = "";
 				}
 				// if any of both of them or both are null
-				return new Test(stepDescription, exp, act,
+				return new TestLog(stepDescription, exp, act,
 						(exp.equals(act) ? Constants.Reporting.PASS : Constants.Reporting.FAIL), null);
 			}
 
@@ -300,8 +302,8 @@ public class Test {
 				if (expectedValue instanceof String[] && actualValue instanceof String[]) {
 					String[] exps = (String[]) expectedValue;
 					String[] acts = (String[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					String exps = (String) expectedValue;
 					String acts = (String) actualValue;
@@ -315,8 +317,8 @@ public class Test {
 				if (expectedValue instanceof Integer[] && actualValue instanceof Integer[]) {
 					Integer[] exps = (Integer[]) expectedValue;
 					Integer[] acts = (Integer[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					Integer exps = (Integer) expectedValue;
 					Integer acts = (Integer) actualValue;
@@ -330,8 +332,8 @@ public class Test {
 				if (expectedValue instanceof Long[] && actualValue instanceof Long[]) {
 					Long[] exps = (Long[]) expectedValue;
 					Long[] acts = (Long[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					Long exps = (Long) expectedValue;
 					Long acts = (Long) actualValue;
@@ -345,8 +347,8 @@ public class Test {
 				if (expectedValue instanceof Float[] && actualValue instanceof Float[]) {
 					Float[] exps = (Float[]) expectedValue;
 					Float[] acts = (Float[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					Float exps = (Float) expectedValue;
 					Float acts = (Float) actualValue;
@@ -360,8 +362,8 @@ public class Test {
 				if (expectedValue instanceof Double[] && actualValue instanceof Double[]) {
 					Double[] exps = (Double[]) expectedValue;
 					Double[] acts = (Double[]) actualValue;
-					exp = Test.getPrintableStringOfArray(exps);
-					act = Test.getPrintableStringOfArray(acts);
+					exp = TestLog.getPrintableStringOfArray(exps);
+					act = TestLog.getPrintableStringOfArray(acts);
 				} else {
 					Double exps = (Double) expectedValue;
 					Double acts = (Double) actualValue;
@@ -373,11 +375,11 @@ public class Test {
 				act = "invalid dataType";
 			}
 
-			return new Test(stepDescription, exp, act,
+			return new TestLog(stepDescription, exp, act,
 					(exp.equals(act) ? Constants.Reporting.PASS : Constants.Reporting.FAIL), attachment);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new Test(stepDescription, "logging issue", e.getMessage(), Constants.Reporting.FAIL, attachment);
+			return new TestLog(stepDescription, "logging issue", e.getMessage(), Constants.Reporting.FAIL, attachment);
 		}
 	}
 
@@ -402,8 +404,8 @@ public class Test {
 	 */
 	@Override
 	public String toString() {
-		return "TestLog [stepDescription=" + stepDescription + ", expectedValue=" + expectedValue + ", actualValue="
-				+ actualValue + ", logStatus=" + logStatus + ", attachment=" + attachment + "]";
+		return "[[" + stepDescription + "], [" + expectedValue + "], [" + actualValue + "], [" + logStatus + "], ["
+				+ attachment + "], [" + evidenceTime + "]]";
 	}
 
 }

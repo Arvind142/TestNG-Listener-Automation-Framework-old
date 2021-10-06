@@ -22,15 +22,15 @@ public class TestNGBase {
 	/***
 	 * classLevel map holds details of test case execution at class level
 	 */
-	private Map<String, List<Test>> classLevel = null;
+	private Map<String, List<TestLog>> classLevel = null;
 	/***
 	 * testLevel list holds logs of each test case
 	 */
-	private List<Test> testLevel = null;
+	private List<TestLog> testLevel = null;
 	/**
 	 * Test class variable for test logging
 	 */
-	private Test log = null;
+	private TestLog log = null;
 	/**
 	 * businessfunction variable to work with businessFunction methods
 	 */
@@ -71,9 +71,8 @@ public class TestNGBase {
 	 */
 	@BeforeClass
 	public void beforeClass() {
-		businessFunction.readApplicaitonLevelProperty();
 		businessFunction.readEnvironmentLevelProperty();
-		classLevel = new ConcurrentHashMap<String, List<Test>>();
+		classLevel = new ConcurrentHashMap<String, List<TestLog>>();
 		className = this.getClass().getSimpleName();
 	}
 
@@ -89,12 +88,12 @@ public class TestNGBase {
 			if (ListenerClass.testResultMap.containsKey(key)) {
 				// below code is extremely important because of timeout/SKIP case
 				// getting classLevel logs
-				testLevel = new ArrayList<Test>();
+				testLevel = new ArrayList<TestLog>();
 				testLevel = classLevel.get(key);
 				// getting suite level logs
-				List<Test> tempList = ListenerClass.testResultMap.get(key);
+				List<TestLog> tempList = ListenerClass.testResultMap.get(key);
 				// appending suite level log into classLevel
-				for (Test log : tempList) {
+				for (TestLog log : tempList) {
 					testLevel.add(log);
 				}
 				ListenerClass.testResultMap.replace(key, testLevel);
@@ -112,7 +111,7 @@ public class TestNGBase {
 	 * @param details  details which is to be logged
 	 */
 	public synchronized void logInfo(String testName, String steps, String details) {
-		log = Test.logInfo(steps, details);
+		log = TestLog.logInfo(steps, details);
 		addLogToMap(testName, log);
 	}
 
@@ -124,7 +123,7 @@ public class TestNGBase {
 	 * @param details  details which is to be logged
 	 */
 	public synchronized void logSkip(String testName, String steps, String details) {
-		log = Test.logSkip(steps, details);
+		log = TestLog.logSkip(steps, details);
 		addLogToMap(testName, log);
 	}
 
@@ -136,7 +135,7 @@ public class TestNGBase {
 	 * @param details  details which is to be logged
 	 */
 	public synchronized void logPass(String testName, String steps, String details) {
-		log = Test.logPass(steps, details);
+		log = TestLog.logPass(steps, details);
 		addLogToMap(testName, log);
 	}
 
@@ -148,7 +147,7 @@ public class TestNGBase {
 	 * @param expected details which is to be logged
 	 */
 	public synchronized void logError(String testName, String steps, String expected) {
-		log = Test.logError(steps, expected);
+		log = TestLog.logError(steps, expected);
 		addLogToMap(testName, log);
 	}
 
@@ -162,7 +161,7 @@ public class TestNGBase {
 	 * @param actual   actual value
 	 */
 	public synchronized <T> void log(String testName, String steps, T expected, T actual) {
-		log = Test.log(steps, expected, actual);
+		log = TestLog.log(steps, expected, actual);
 		addLogToMap(testName, log);
 	}
 
@@ -177,7 +176,7 @@ public class TestNGBase {
 	 * @param attachmant evidence path
 	 */
 	public synchronized <T> void log(String testName, String steps, T expected, T actual, String attachmant) {
-		log = Test.log(steps, expected, actual, attachmant);
+		log = TestLog.log(steps, expected, actual, attachmant);
 		addLogToMap(testName, log);
 	}
 
@@ -187,7 +186,7 @@ public class TestNGBase {
 	 * @param testName test case name
 	 * @param log      statement with status
 	 */
-	public synchronized void addLogToMap(String testName, Test log) {
+	public synchronized void addLogToMap(String testName, TestLog log) {
 		if (classLevel.containsKey(testName)) {
 			// already exist
 			if (classLevel.get(testName) != null) {
@@ -195,14 +194,14 @@ public class TestNGBase {
 				testLevel = classLevel.get(testName);
 			} else {
 				// creating new list
-				testLevel = new ArrayList<Test>();
+				testLevel = new ArrayList<TestLog>();
 			}
 			// adding log and updating map
 			testLevel.add(log);
 			classLevel.replace(testName, testLevel);
 		} else {
 			// creating list and updating it in map
-			testLevel = new ArrayList<Test>();
+			testLevel = new ArrayList<TestLog>();
 			testLevel.add(log);
 			classLevel.put(testName, testLevel);
 		}

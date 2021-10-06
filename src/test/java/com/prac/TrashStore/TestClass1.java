@@ -17,7 +17,7 @@ import com.prac.TrashStore.OR.guru99;
 
 public class TestClass1 extends TestNGBase {
 
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void logPrimitiveComparison() {
 		// test case name
 		String testName = className + "." + (new Object() {
@@ -85,7 +85,7 @@ public class TestClass1 extends TestNGBase {
 
 	}
 
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void seleniumBasedHtmlUnitDriver() {
 		// test case name
 		String testName = className + "." + (new Object() {

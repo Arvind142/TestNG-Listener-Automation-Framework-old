@@ -87,7 +87,7 @@ public class Web {
 				break;
 			case "EDGE":
 			case "MSEDGE":
-				WebDriverManager.edgedriver().driverVersion("92.0.902.84").setup();
+				WebDriverManager.edgedriver().setup();
 				EdgeOptions eOptions = (EdgeOptions) options;
 				driver = new EdgeDriver(eOptions);
 				break;
