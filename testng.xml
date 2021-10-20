@@ -7,7 +7,7 @@
 		<listener class-name="com.prac.framework.util.ListenerClass"></listener>
 	</listeners>
 	<test name="Test">
-		<!-- <classes> <class name="com.prac.TrashStore.TestClass1"></class> </classes> -->
+		<!-- <classes> <class name="com.prac.TrashStore.FlowClass"></class> </classes> -->
 		<packages>
 			<package name="com.prac.TrashStore" />
 		</packages>

@@ -2,6 +2,7 @@ package com.prac.framework.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,9 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import org.testng.TestNG;
 
 /**
  * backbone of framework with all listeners to perform some set of operations
@@ -80,8 +87,7 @@ public class ListenerClass implements ITestListener {
 	 */
 	@Override
 	public void onTestStart(ITestResult result) {
-		System.out.println(
-				"Test Started: " + result.getInstanceName() + "." + result.getMethod().getMethodName());
+		System.out.println("Test Started: " + result.getInstanceName() + "." + result.getMethod().getMethodName());
 	}
 
 	/**
@@ -137,10 +143,13 @@ public class ListenerClass implements ITestListener {
 	 */
 	@Override
 	public void onStart(ITestContext context) {
-		suiteTimeStamps.put("suiteStartTime", reportUiDateFormat.format(Calendar.getInstance().getTime()));
-
 		// initializing properties file
 		initializeApplicationLevelProperty();
+
+		// starting logger
+		LoggingClass.startLogger(reportingFolder.getAbsolutePath());
+
+		suiteTimeStamps.put("suiteStartTime", reportUiDateFormat.format(Calendar.getInstance().getTime()));
 	}
 
 	/***
@@ -162,11 +171,17 @@ public class ListenerClass implements ITestListener {
 				+ suiteExecutionStatus.get("Passed") + ", Failures: " + suiteExecutionStatus.get("Failed") + ", Skips: "
 				+ suiteExecutionStatus.get("Skipped"));
 		System.out.println("===============================================");
+		System.out.println("Test details");
+		for (String tc : testResultMap.keySet()) {
+			System.out.println("Status: " + getTestCaseStatus(testResultMap.get(tc)) + " => " + tc);
+		}
 
-		JsonExport jsonExport = new JsonExport();
-		jsonExport.writeJsonSuite(suiteTimeStamps,suiteExecutionStatus);
-		jsonExport.writeJsonTestCase(testResultMap);
-		jsonExport.extractJson(reportingFolder);
+		if (applicationLevelProperty.get("jsonReport").toString().equals("Yes")) {
+			JsonExport jsonExport = new JsonExport();
+			jsonExport.writeJsonSuite(suiteTimeStamps, suiteExecutionStatus);
+			jsonExport.writeJsonTestCase(testResultMap);
+			jsonExport.extractJson(reportingFolder);
+		}
 	}
 
 	/***
@@ -189,8 +204,10 @@ public class ListenerClass implements ITestListener {
 			singleLog = testResultMap.get(methodName);
 		}
 		if (statement.contains("TESTNG: Skip")) {
+			LoggingClass.log.warning(methodName + ", Skipped");
 			singleLog.add(TestLog.logSkip("Test execution", statement));
 		} else {
+			LoggingClass.log.warning(methodName + ", " + statement);
 			singleLog.add(TestLog.logError("Test Execution", statement));
 		}
 		if (testResultMap.containsKey(methodName)) {

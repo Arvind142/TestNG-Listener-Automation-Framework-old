@@ -12,24 +12,12 @@
 			<id>arvind</id>
 			<name>Arvind Choudhary</name>
 			<email>arvindchoudhary142@yahoo.in</email>
-			<url>http://www.example.com/jdoe</url>
+			<!-- <url>http://www.example.com/jdoe</url> -->
 			<organization>NA</organization>
 			<organizationUrl>NA</organizationUrl>
 			<roles>
 				<role>architect</role>
 				<role>developer</role>
-			</roles>
-		</developer>
-
-		<developer>
-			<id>Kshitij</id>
-			<name>Kshitij Bhuwad</name>
-			<email>NA</email>
-			<url>NA</url>
-			<organization>NA</organization>
-			<organizationUrl>NA</organizationUrl>
-			<roles>
-				<role>consultant</role>
 			</roles>
 		</developer>
 
@@ -48,6 +36,16 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M5</version>
 				<configuration>
+					<properties>
+						<property>
+							<name>usedefaultlisteners</name>
+							<value>false</value>
+						</property>
+						<property>
+							<name>disableXmlReport</name>
+							<value>false</value>
+						</property>
+					</properties>
 					<suiteXmlFiles>
 						<suiteXmlFile>testng.xml</suiteXmlFile>
 					</suiteXmlFiles>
@@ -68,17 +66,13 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>4.0.0-alpha-6</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.seleniumhq.selenium</groupId>
-					<artifactId>htmlunit-driver</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>4.0.0</version>
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/webdriver -->
 		<dependency>
@@ -125,42 +119,6 @@
 			<version>8.0.22</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-java</artifactId>
-			<version>6.9.1</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-core -->
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-core</artifactId>
-			<version>6.9.1</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-testng -->
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-testng</artifactId>
-			<version>6.9.1</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.cucumber/gherkin -->
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>gherkin</artifactId>
-			<version>16.0.0</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-jvm -->
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-jvm</artifactId>
-			<version>6.9.1</version>
-			<type>pom</type>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
 		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>
@@ -172,6 +130,15 @@
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
 			<version>3.8.0</version>
+		</dependency>
+
+		<!-- Reporting -->
+
+		<!-- https://mvnrepository.com/artifact/com.aventstack/extentreports -->
+		<dependency>
+			<groupId>com.aventstack</groupId>
+			<artifactId>extentreports</artifactId>
+			<version>5.0.9</version>
 		</dependency>
 
 	</dependencies>

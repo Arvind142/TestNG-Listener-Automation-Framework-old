@@ -1,12 +1,19 @@
 package com.prac.framework.util;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+
 import com.prac.TrashStore.BusinessFunctions;
 import com.prac.utils.Web;
 import com.prac.utils.API;
@@ -18,6 +25,7 @@ import com.prac.utils.Database;
  * @author arvin
  *
  */
+
 public class TestNGBase {
 	/***
 	 * classLevel map holds details of test case execution at class level
@@ -187,6 +195,14 @@ public class TestNGBase {
 	 * @param log      statement with status
 	 */
 	public synchronized void addLogToMap(String testName, TestLog log) {
+		boolean failFound = (log.getLogStatus().equals(Constants.Reporting.FAIL)) ? true : false;
+		if (log.getLogStatus().equals(Constants.Reporting.FAIL)) {
+			LoggingClass.log.log(Level.SEVERE, testName + ":" + log);
+		} else if (log.getLogStatus().equals(Constants.Reporting.WARNING)) {
+			LoggingClass.log.log(Level.WARNING, testName + ":" + log);
+		} else {
+			LoggingClass.log.log(Level.INFO, testName + ":" + log);
+		}
 		if (classLevel.containsKey(testName)) {
 			// already exist
 			if (classLevel.get(testName) != null) {
@@ -205,6 +221,7 @@ public class TestNGBase {
 			testLevel.add(log);
 			classLevel.put(testName, testLevel);
 		}
+		assertTrue(!failFound);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.prac.TrashStore;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -84,29 +85,7 @@ public class TestClass1 extends TestNGBase {
 		}
 
 	}
-
-	@Test(enabled = true)
-	public void seleniumBasedHtmlUnitDriver() {
-		// test case name
-		String testName = className + "." + (new Object() {
-		}.getClass().getEnclosingMethod().getName());
-		try {
-			logInfo(testName, "Execution started", "!!");
-			HtmlUnitDriver driver = web.initializeHeadlessWebDriver();
-			driver.get("http://the-internet.herokuapp.com/abtest");
-			System.out.println(web.getWebElement(driver, the_internet.ab.header3, true, 5));
-			System.out.println(web.getWebElement(driver, the_internet.ab.header7, false, 5) == null);
-			System.out.println(web.getWebElement(driver, the_internet.ab.header9, false, 5));
-			Thread.sleep(2000);
-			web.destroyWebDriver(driver);
-			logInfo(testName, "Execution stopped", "!!");
-		} catch (Exception e) {
-			e.printStackTrace();
-			logError(testName, "execution...", e.getMessage());
-		}
-
-	}
-
+	
 	@Test(enabled = true)
 	public void seleniumBasedHeadLessUI() {
 		// test case name
@@ -188,6 +167,31 @@ public class TestClass1 extends TestNGBase {
 			} else {
 				System.out.println("Perfect not Displayed !!!");
 			}
+
+			Thread.sleep(2000);
+			web.destroyWebDriver(driver);
+			logInfo(testName, "Execution stopped", "!!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logError(testName, "execution...", e.getMessage());
+		}
+
+	}
+	
+	@Test(enabled = true)
+	public void seleniumBasedHeadLessUI_Error() {
+		// test case name
+		String testName = className + "." + (new Object() {
+		}.getClass().getEnclosingMethod().getName());
+		try {
+			logInfo(testName, "Execution started", "!!");
+			// initialize
+			EdgeOptions options = new EdgeOptions();
+			options.setHeadless(true);
+			WebDriver driver = web.initializeChromiumWebBrowsers("EDGE", options);
+			driver.get("http://the-internet.herokuapp.com/abtest");
+			
+			driver.findElement(By.className("welcome_d_costa")).sendKeys("sacacsac");
 
 			Thread.sleep(2000);
 			web.destroyWebDriver(driver);

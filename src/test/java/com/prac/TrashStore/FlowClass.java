@@ -16,7 +16,7 @@ public class FlowClass extends TestNGBase {
 
 	WebDriver driver = null;
 
-	@Test
+	@Test()
 	public void validCaseWOPram() {
 		// few reporting must
 		String testName = className + "." + (new Object() {
@@ -73,7 +73,7 @@ public class FlowClass extends TestNGBase {
 		}
 	}
 
-	@Test
+	@Test()
 	public void invalidCaseWithSkip() {
 		String testName = className + "." + (new Object() {
 		}.getClass().getEnclosingMethod().getName());
@@ -82,7 +82,7 @@ public class FlowClass extends TestNGBase {
 		throw new SkipException("Test Case to be skipped");
 	}
 
-	@Test
+	@Test()
 	public void errorTest() {
 		// few reporting must
 		String testName = className + "." + (new Object() {
