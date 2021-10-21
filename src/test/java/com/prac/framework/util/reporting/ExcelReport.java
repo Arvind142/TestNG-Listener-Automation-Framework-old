@@ -15,8 +15,6 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.prac.framework.util.Constants;
 import com.prac.framework.util.ListenerClass;
 import com.prac.framework.util.TestLog;
 
@@ -272,7 +270,7 @@ public class ExcelReport implements Reporting {
 	}
 
 	public boolean writeExcel(File outputFolder) {
-		try (FileOutputStream outputStream = new FileOutputStream(outputFolder.getAbsoluteFile() + "/results.xlsx")) {
+		try (FileOutputStream outputStream = new FileOutputStream(outputFolder.getAbsoluteFile() + "/result.xlsx")) {
 			workbook.write(outputStream);
 			return true;
 		} catch (Exception e) {
