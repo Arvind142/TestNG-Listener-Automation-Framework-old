@@ -1,19 +1,14 @@
 package com.prac.framework.util;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Listeners;
-
 import com.prac.TrashStore.BusinessFunctions;
 import com.prac.utils.Web;
 import com.prac.utils.API;

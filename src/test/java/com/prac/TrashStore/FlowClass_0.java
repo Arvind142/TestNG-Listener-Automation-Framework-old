@@ -12,7 +12,7 @@ import com.prac.framework.util.TestNGBase;
  * @author arvin
  *
  */
-public class FlowClass extends TestNGBase {
+public class FlowClass_0 extends TestNGBase {
 
 	WebDriver driver = null;
 

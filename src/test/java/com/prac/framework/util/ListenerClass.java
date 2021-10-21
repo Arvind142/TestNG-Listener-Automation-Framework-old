@@ -2,7 +2,6 @@ package com.prac.framework.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,15 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import org.testng.TestNG;
+
+import com.prac.framework.util.reporting.ExcelReport;
+import com.prac.framework.util.reporting.HtmlReport;
+import com.prac.framework.util.reporting.JsonReport;
+import com.prac.framework.util.reporting.Reporting;
 
 /**
  * backbone of framework with all listeners to perform some set of operations
@@ -81,6 +79,11 @@ public class ListenerClass implements ITestListener {
 	 * holds values of property file
 	 */
 	public static Properties applicationLevelProperty = new Properties();
+
+	/**
+	 * reporting genration
+	 */
+	private Reporting report = null;
 
 	/**
 	 * first method to be executed on start of suite execution
@@ -177,10 +180,18 @@ public class ListenerClass implements ITestListener {
 		}
 
 		if (applicationLevelProperty.get("jsonReport").toString().equals("Yes")) {
-			JsonExport jsonExport = new JsonExport();
-			jsonExport.writeJsonSuite(suiteTimeStamps, suiteExecutionStatus);
-			jsonExport.writeJsonTestCase(testResultMap);
-			jsonExport.extractJson(reportingFolder);
+			report = new JsonReport();
+			System.out.println(report.generateReport(reportingFolder) ? "Json export success" : "Json export failed");
+		}
+
+		if (applicationLevelProperty.get("htmlReport").toString().equals("Yes")) {
+			report = new HtmlReport();
+			System.out.println(report.generateReport(reportingFolder) ? "Html export success" : "Html export failed");
+		}
+
+		if (applicationLevelProperty.get("excelReport").toString().equals("Yes")) {
+			report = new ExcelReport();
+			System.out.println(report.generateReport(reportingFolder) ? "Excel export success" : "Excel export failed");
 		}
 	}
 
@@ -192,8 +203,8 @@ public class ListenerClass implements ITestListener {
 	public void setLog(ITestResult result, String statement) {
 		// adding log for timeoutCase
 		List<TestLog> singleLog = new ArrayList<TestLog>();
-		String methodName = result.getInstanceName().replace(".", "_");
-		methodName = methodName.split("_")[methodName.split("_").length - 1];
+		String className = result.getInstanceName().replace(".", ">");
+		String methodName = className.split(">")[className.split(">").length - 1];
 		if (result.getParameters().length > 0) {
 			methodName += "." + result.getMethod().getMethodName() + "."
 					+ getTestCaseNameConverted(result.getParameters()[0]);
@@ -202,6 +213,8 @@ public class ListenerClass implements ITestListener {
 		}
 		if (testResultMap.containsKey(methodName)) {
 			singleLog = testResultMap.get(methodName);
+		} else {
+			singleLog = new ArrayList<TestLog>();
 		}
 		if (statement.contains("TESTNG: Skip")) {
 			LoggingClass.log.warning(methodName + ", Skipped");
