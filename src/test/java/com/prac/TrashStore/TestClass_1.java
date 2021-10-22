@@ -14,7 +14,7 @@ import com.prac.framework.util.TestNGBase;
 import com.prac.TrashStore.OR.the_internet;
 import com.prac.TrashStore.OR.guru99;
 
-public class FlowClass_1 extends TestNGBase {
+public class TestClass_1 extends TestNGBase {
 
 	@Test(enabled = true)
 	public void logPrimitiveComparison() {
