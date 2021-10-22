@@ -163,7 +163,7 @@ public class ListenerClass implements ITestListener {
 		initializeApplicationLevelProperty();
 
 		// initializing html reporting
-		htmlReporter = new ExtentSparkReporter(reportingFolder.getAbsolutePath() + "/result.html");
+		htmlReporter = new ExtentSparkReporter(reportingFolder.getPath() + "/result.html");
 		extentReport = new ExtentReports();
 		try {
 			htmlReporter.loadXMLConfig("src/test/resources/extent-config.xml");
@@ -176,7 +176,7 @@ public class ListenerClass implements ITestListener {
 		htmlTestLogs = new HashMap<String, ExtentTest>();
 
 		// starting logger
-		LoggingClass.startLogger(reportingFolder.getAbsolutePath());
+		LoggingClass.startLogger(reportingFolder.getPath());
 
 		suiteTimeStamps.put("suiteStartTime", reportUiDateFormat.format(Calendar.getInstance().getTime()));
 	}

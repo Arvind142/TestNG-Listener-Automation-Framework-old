@@ -12,7 +12,7 @@ import com.prac.framework.util.TestNGBase;
  * @author arvin
  *
  */
-public class TestClass2 extends TestNGBase {
+public class TestClass_2 extends TestNGBase {
 
 	WebDriver driver = null;
 

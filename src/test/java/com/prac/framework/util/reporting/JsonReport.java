@@ -48,7 +48,7 @@ public class JsonReport implements Reporting {
 			// writing cases
 			writeTestCase();
 			// exporting
-			FileWriter file = new FileWriter(outputFolder.getAbsolutePath() + "/result.json");
+			FileWriter file = new FileWriter(outputFolder.getPath() + "/result.json");
 			file.write(jsonObject.toString());
 			file.close();
 			return true;

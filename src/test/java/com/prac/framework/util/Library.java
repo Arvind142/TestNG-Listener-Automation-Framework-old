@@ -1,8 +1,10 @@
 package com.prac.framework.util;
 
+import java.util.Calendar;
 import java.util.List;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import com.codoid.products.fillo.Fillo;
 import com.codoid.products.fillo.Recordset;
@@ -92,6 +94,16 @@ public class Library {
 			e.printStackTrace();
 		}
 		return excelData;
+	}
+
+	/**
+	 * returns current date in string in the format passed
+	 * 
+	 * @param format format in which you want to see datetime
+	 * @return String date format
+	 */
+	public String getCurrentDate(String format) {
+		return (new SimpleDateFormat(format)).format(Calendar.getInstance().getTime());
 	}
 
 }

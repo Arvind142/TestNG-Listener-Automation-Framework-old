@@ -270,7 +270,7 @@ public class ExcelReport implements Reporting {
 	}
 
 	public boolean writeExcel(File outputFolder) {
-		try (FileOutputStream outputStream = new FileOutputStream(outputFolder.getAbsoluteFile() + "/result.xlsx")) {
+		try (FileOutputStream outputStream = new FileOutputStream(outputFolder.getPath() + "/result.xlsx")) {
 			workbook.write(outputStream);
 			return true;
 		} catch (Exception e) {
