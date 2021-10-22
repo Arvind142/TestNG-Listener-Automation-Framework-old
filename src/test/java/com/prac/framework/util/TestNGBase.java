@@ -1,19 +1,16 @@
 package com.prac.framework.util;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Listeners;
 
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.prac.TrashStore.BusinessFunctions;
 import com.prac.utils.Web;
 import com.prac.utils.API;
@@ -195,14 +192,24 @@ public class TestNGBase {
 	 * @param log      statement with status
 	 */
 	public synchronized void addLogToMap(String testName, TestLog log) {
-		boolean failFound = (log.getLogStatus().equals(Constants.Reporting.FAIL)) ? true : false;
+
+		ExtentTest test = ListenerClass.htmlTestLogs.get(testName);
+//		boolean failFound = (log.getLogStatus().equals(Constants.Reporting.FAIL)) ? true : false;
 		if (log.getLogStatus().equals(Constants.Reporting.FAIL)) {
 			LoggingClass.log.log(Level.SEVERE, testName + ":" + log);
+			test.log(Status.FAIL, log.toString());
 		} else if (log.getLogStatus().equals(Constants.Reporting.WARNING)) {
 			LoggingClass.log.log(Level.WARNING, testName + ":" + log);
+			test.log(Status.WARNING, log.toString());
 		} else {
 			LoggingClass.log.log(Level.INFO, testName + ":" + log);
+			if (log.getLogStatus().equals(Constants.Reporting.PASS)) {
+				test.log(Status.PASS, log.toString());
+			} else {
+				test.log(Status.INFO, log.toString());
+			}
 		}
+		ListenerClass.htmlTestLogs.put(testName, test);
 		if (classLevel.containsKey(testName)) {
 			// already exist
 			if (classLevel.get(testName) != null) {
@@ -221,7 +228,7 @@ public class TestNGBase {
 			testLevel.add(log);
 			classLevel.put(testName, testLevel);
 		}
-		assertTrue(!failFound);
+//		assertTrue(!failFound);
 	}
 
 }

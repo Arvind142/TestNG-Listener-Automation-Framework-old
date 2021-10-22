@@ -13,15 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import org.testng.TestNG;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.prac.framework.util.reporting.ExcelReport;
+import com.prac.framework.util.reporting.JsonReport;
+import com.prac.framework.util.reporting.Reporting;
 
 /**
  * backbone of framework with all listeners to perform some set of operations
@@ -83,11 +84,26 @@ public class ListenerClass implements ITestListener {
 	public static Properties applicationLevelProperty = new Properties();
 
 	/**
+	 * reporting genration
+	 */
+	private Reporting report = null;
+
+	private ExtentSparkReporter htmlReporter = null;
+
+	private ExtentReports extentReport = null;
+
+	public static Map<String, ExtentTest> htmlTestLogs = null;
+
+	/**
 	 * first method to be executed on start of suite execution
 	 */
 	@Override
 	public void onTestStart(ITestResult result) {
-		System.out.println("Test Started: " + result.getInstanceName() + "." + result.getMethod().getMethodName());
+		String methodName = getTestName(result);
+		System.out.println("Test Started: " + methodName);
+		ExtentTest test = extentReport.createTest(methodName);
+		extentReport.attachReporter(htmlReporter);
+		htmlTestLogs.put(methodName, test);
 	}
 
 	/**
@@ -146,6 +162,19 @@ public class ListenerClass implements ITestListener {
 		// initializing properties file
 		initializeApplicationLevelProperty();
 
+		// initializing html reporting
+		htmlReporter = new ExtentSparkReporter(reportingFolder.getAbsolutePath() + "/result.html");
+		extentReport = new ExtentReports();
+		try {
+			htmlReporter.loadXMLConfig("src/test/resources/extent-config.xml");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for (Object key : applicationLevelProperty.keySet()) {
+			extentReport.setSystemInfo(key.toString(), applicationLevelProperty.getProperty(key.toString()));
+		}
+		htmlTestLogs = new HashMap<String, ExtentTest>();
+
 		// starting logger
 		LoggingClass.startLogger(reportingFolder.getAbsolutePath());
 
@@ -177,11 +206,17 @@ public class ListenerClass implements ITestListener {
 		}
 
 		if (applicationLevelProperty.get("jsonReport").toString().equals("Yes")) {
-			JsonExport jsonExport = new JsonExport();
-			jsonExport.writeJsonSuite(suiteTimeStamps, suiteExecutionStatus);
-			jsonExport.writeJsonTestCase(testResultMap);
-			jsonExport.extractJson(reportingFolder);
+			report = new JsonReport();
+			System.out.println(report.generateReport(reportingFolder) ? "Json export success!" : "Json export failed!");
 		}
+
+		if (applicationLevelProperty.get("excelReport").toString().equals("Yes")) {
+			report = new ExcelReport();
+			System.out
+					.println(report.generateReport(reportingFolder) ? "Excel export success!" : "Excel export failed!");
+		}
+
+		extentReport.flush();
 	}
 
 	/***
@@ -192,24 +227,24 @@ public class ListenerClass implements ITestListener {
 	public void setLog(ITestResult result, String statement) {
 		// adding log for timeoutCase
 		List<TestLog> singleLog = new ArrayList<TestLog>();
-		String methodName = result.getInstanceName().replace(".", "_");
-		methodName = methodName.split("_")[methodName.split("_").length - 1];
-		if (result.getParameters().length > 0) {
-			methodName += "." + result.getMethod().getMethodName() + "."
-					+ getTestCaseNameConverted(result.getParameters()[0]);
-		} else {
-			methodName += "." + result.getMethod().getMethodName();
-		}
+		String methodName = getTestName(result);
 		if (testResultMap.containsKey(methodName)) {
 			singleLog = testResultMap.get(methodName);
+		} else {
+			singleLog = new ArrayList<TestLog>();
 		}
+
+		ExtentTest test = ListenerClass.htmlTestLogs.get(methodName);
 		if (statement.contains("TESTNG: Skip")) {
 			LoggingClass.log.warning(methodName + ", Skipped");
+			test.log(Status.SKIP, statement);
 			singleLog.add(TestLog.logSkip("Test execution", statement));
 		} else {
-			LoggingClass.log.warning(methodName + ", " + statement);
+			LoggingClass.log.severe(methodName + ", " + statement);
+			test.log(Status.FAIL, statement);
 			singleLog.add(TestLog.logError("Test Execution", statement));
 		}
+
 		if (testResultMap.containsKey(methodName)) {
 			testResultMap.replace(methodName, singleLog);
 		} else {
@@ -239,6 +274,18 @@ public class ListenerClass implements ITestListener {
 		} else {
 			testTimeStamps.put(result.getInstanceName() + "." + result.getMethod().getMethodName(), testExecutionDates);
 		}
+	}
+
+	public String getTestName(ITestResult result) {
+		String className = result.getInstanceName().replace(".", ">");
+		String methodName = className.split(">")[className.split(">").length - 1];
+		if (result.getParameters().length > 0) {
+			methodName += "." + result.getMethod().getMethodName() + "."
+					+ getTestCaseNameConverted(result.getParameters()[0]);
+		} else {
+			methodName += "." + result.getMethod().getMethodName();
+		}
+		return methodName;
 	}
 
 	/**

@@ -2,7 +2,6 @@ package com.prac.framework.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.logging.Level;
 
 /***
  * Test class holds few variables which are required while logging test status

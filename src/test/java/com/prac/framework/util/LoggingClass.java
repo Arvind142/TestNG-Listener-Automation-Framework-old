@@ -18,7 +18,7 @@ public class LoggingClass {
 		consoleHandler = new ConsoleHandler();
 		consoleHandler.setLevel(Level.ALL);
 		try {
-			fileHandler = new FileHandler(reportingFolder + "/logStatus.xml");
+			fileHandler = new FileHandler(reportingFolder + "/log.xml");
 		} catch (SecurityException | IOException e) {
 			e.printStackTrace();
 		}

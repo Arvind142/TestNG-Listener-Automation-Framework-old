@@ -1,7 +1,6 @@
 package com.prac.TrashStore;
 
 import java.io.File;
-
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -9,14 +8,13 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 import com.prac.framework.util.TestNGBase;
 import com.prac.TrashStore.OR.the_internet;
 import com.prac.TrashStore.OR.guru99;
 
-public class TestClass1 extends TestNGBase {
+public class TestClass_1 extends TestNGBase {
 
 	@Test(enabled = true)
 	public void logPrimitiveComparison() {
@@ -85,7 +83,7 @@ public class TestClass1 extends TestNGBase {
 		}
 
 	}
-	
+
 	@Test(enabled = true)
 	public void seleniumBasedHeadLessUI() {
 		// test case name
@@ -177,7 +175,7 @@ public class TestClass1 extends TestNGBase {
 		}
 
 	}
-	
+
 	@Test(enabled = true)
 	public void seleniumBasedHeadLessUI_Error() {
 		// test case name
@@ -190,7 +188,7 @@ public class TestClass1 extends TestNGBase {
 			options.setHeadless(true);
 			WebDriver driver = web.initializeChromiumWebBrowsers("EDGE", options);
 			driver.get("http://the-internet.herokuapp.com/abtest");
-			
+
 			driver.findElement(By.className("welcome_d_costa")).sendKeys("sacacsac");
 
 			Thread.sleep(2000);
@@ -198,7 +196,7 @@ public class TestClass1 extends TestNGBase {
 			logInfo(testName, "Execution stopped", "!!");
 		} catch (Exception e) {
 			e.printStackTrace();
-			logError(testName, "execution...", e.getMessage());
+			logError(testName, "execution...", e.getLocalizedMessage());
 		}
 
 	}
