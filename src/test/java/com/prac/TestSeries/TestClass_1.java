@@ -10,7 +10,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
-
 import com.prac.framework.util.ListenerClass;
 import com.prac.framework.util.TestNGBase;
 import com.prac.TrashStore.OR.the_internet;
