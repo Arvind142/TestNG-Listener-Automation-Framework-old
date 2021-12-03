@@ -27,7 +27,7 @@ import com.prac.framework.util.reporting.Reporting;
 /**
  * backbone of framework with all listeners to perform some set of operations
  * based on need
- * 
+ *
  * @author arvin
  *
  */
@@ -84,7 +84,7 @@ public class ListenerClass implements ITestListener {
 	public static Properties applicationLevelProperty = new Properties();
 
 	/**
-	 * reporting genration
+	 * reporting generation
 	 */
 	private Reporting report = null;
 
@@ -163,7 +163,7 @@ public class ListenerClass implements ITestListener {
 		initializeApplicationLevelProperty();
 
 		// initializing html reporting
-		htmlReporter = new ExtentSparkReporter(reportingFolder.getAbsolutePath() + "/result.html");
+		htmlReporter = new ExtentSparkReporter(reportingFolder.getPath() + "/result.html");
 		extentReport = new ExtentReports();
 		try {
 			htmlReporter.loadXMLConfig("src/test/resources/extent-config.xml");
@@ -176,7 +176,7 @@ public class ListenerClass implements ITestListener {
 		htmlTestLogs = new HashMap<String, ExtentTest>();
 
 		// starting logger
-		LoggingClass.startLogger(reportingFolder.getAbsolutePath());
+		LoggingClass.startLogger(reportingFolder.getPath());
 
 		suiteTimeStamps.put("suiteStartTime", reportUiDateFormat.format(Calendar.getInstance().getTime()));
 	}
@@ -205,22 +205,53 @@ public class ListenerClass implements ITestListener {
 			System.out.println("Status: " + getTestCaseStatus(testResultMap.get(tc)) + " => " + tc);
 		}
 
-		if (applicationLevelProperty.get("jsonReport").toString().equals("Yes")) {
+		if (applicationLevelProperty.get("jsonReport").toString().equalsIgnoreCase("Yes")) {
 			report = new JsonReport();
 			System.out.println(report.generateReport(reportingFolder) ? "Json export success!" : "Json export failed!");
 		}
 
-		if (applicationLevelProperty.get("excelReport").toString().equals("Yes")) {
+		if (applicationLevelProperty.get("excelReport").toString().equalsIgnoreCase("Yes")) {
 			report = new ExcelReport();
 			System.out
 					.println(report.generateReport(reportingFolder) ? "Excel export success!" : "Excel export failed!");
 		}
 
 		extentReport.flush();
+
+		//opening report :)
+		if (applicationLevelProperty.get("openReport").toString().equalsIgnoreCase("Yes")) {
+			//identifying browser
+			String browserName=applicationLevelProperty.get("browserName").toString().toLowerCase();
+			String browserCmd="";
+			try{
+				if(applicationLevelProperty.contains("browserPath")){
+					browserCmd=applicationLevelProperty.get("browserPath").toString().replace("\\", "\\\\");
+					Runtime.getRuntime().exec(browserCmd +" file:///"+ reportingFolder.getAbsolutePath().replace("\\","/")+"/result.html");
+				}
+				else {
+					if(browserName.contains("edge")){
+						browserCmd="C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
+						Runtime.getRuntime().exec(browserCmd +" file:///"+ reportingFolder.getAbsolutePath().replace("\\","/")+"/result.html");
+					}
+					else if(browserName.contains("chrome") || browserName.contains("google")){
+						browserCmd="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+						Runtime.getRuntime().exec(browserCmd +" file:///"+ reportingFolder.getAbsolutePath().replace("\\","/")+"/result.html");
+					}
+					else{
+						System.out.println("Incorrect/Un-Supported browser name fetched.... browserName:"+browserName);
+					}
+				}
+			}
+			catch (Exception e){
+				System.out.println("Problem with browser opening, kingly find error code below");
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	/***
-	 * 
+	 *
 	 * @param result    ITestResult to help in identification on tc name and status
 	 * @param statement statement to log
 	 */
@@ -255,7 +286,7 @@ public class ListenerClass implements ITestListener {
 	/**
 	 * method helps in identifying and logging of start and end time for each test
 	 * case
-	 * 
+	 *
 	 * @param result ItestResult which will help method is identification of start
 	 *               and end time of test case
 	 */
@@ -290,7 +321,7 @@ public class ListenerClass implements ITestListener {
 
 	/**
 	 * used to convert object into object[] based on requirement
-	 * 
+	 *
 	 * @param obj parameter of method
 	 * @return string value of testcaseName
 	 */
@@ -326,7 +357,7 @@ public class ListenerClass implements ITestListener {
 
 	/**
 	 * method gives test case status based logs of each test case
-	 * 
+	 *
 	 * @return map which includes count on passed,failed and skipped cases
 	 */
 	public Map<String, Integer> getSuiteStatus() {
@@ -356,7 +387,7 @@ public class ListenerClass implements ITestListener {
 
 	/**
 	 * to get test case status based on test logs
-	 * 
+	 *
 	 * @param logs test logs
 	 * @return color i.e. success - PASS, danger - fail, warning - skip
 	 */

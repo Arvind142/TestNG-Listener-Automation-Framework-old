@@ -1,4 +1,4 @@
-package com.prac.TrashStore;
+package com.prac.TestSeries;
 
 import java.io.File;
 import org.apache.commons.io.FileUtils;
@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
+import com.prac.framework.util.ListenerClass;
 import com.prac.framework.util.TestNGBase;
 import com.prac.TrashStore.OR.the_internet;
 import com.prac.TrashStore.OR.guru99;
@@ -96,9 +97,6 @@ public class TestClass_1 extends TestNGBase {
 			options.setHeadless(true);
 			WebDriver driver = web.initializeChromiumWebBrowsers("EDGE", options);
 			driver.get("http://the-internet.herokuapp.com/abtest");
-			// screenshot
-			File s = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(s, new File("tutorialpoint.png"));
 
 			// send values to field
 			web.openURL(driver, "http://the-internet.herokuapp.com/login");
@@ -189,7 +187,10 @@ public class TestClass_1 extends TestNGBase {
 			WebDriver driver = web.initializeChromiumWebBrowsers("EDGE", options);
 			driver.get("http://the-internet.herokuapp.com/abtest");
 
-			driver.findElement(By.className("welcome_d_costa")).sendKeys("sacacsac");
+			log(testName, "ScrenShot", "", "", web.takeSceenShotWebPage(driver, "SS"));
+			log(testName, "ScrenShot", "", "", web.takeScreenShotScreenSnip("Snip"));
+
+//			driver.findElement(By.className("welcome_d_costa")).sendKeys("sacacsac");
 
 			Thread.sleep(2000);
 			web.destroyWebDriver(driver);

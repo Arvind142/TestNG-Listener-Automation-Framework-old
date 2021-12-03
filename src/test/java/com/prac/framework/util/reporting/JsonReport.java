@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.prac.framework.util.ListenerClass;
@@ -48,7 +47,7 @@ public class JsonReport implements Reporting {
 			// writing cases
 			writeTestCase();
 			// exporting
-			FileWriter file = new FileWriter(outputFolder.getAbsolutePath() + "/result.json");
+			FileWriter file = new FileWriter(outputFolder.getPath() + "/result.json");
 			file.write(jsonObject.toString());
 			file.close();
 			return true;

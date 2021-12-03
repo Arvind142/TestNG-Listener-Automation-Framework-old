@@ -58,7 +58,11 @@ public class TestLog {
 		this.expectedValue = expectedValue;
 		this.actualValue = actualValue;
 		this.logStatus = logStatus;
-		this.attachment = attachment;
+		if (attachment != null) {
+			this.attachment = "<a href=\"" + attachment + "\" target=\"_blank\"> Click Here!</a>";
+		} else {
+			this.attachment = attachment;
+		}
 		this.evidenceTime = reportUiDateFormat.format(Calendar.getInstance().getTime());
 	}
 
@@ -404,8 +408,37 @@ public class TestLog {
 	 */
 	@Override
 	public String toString() {
-		return "[[" + stepDescription + "], [" + expectedValue + "], [" + actualValue + "], [" + logStatus + "], ["
-				+ attachment + "], [" + evidenceTime + "]]";
+		if (isNullOrEmpty(expectedValue) && isNullOrEmpty(actualValue) && isNullOrEmpty(attachment)) {
+			return " | Description: " + stepDescription + " | ";
+		} else if (isNullOrEmpty(actualValue) && isNullOrEmpty(expectedValue) && !isNullOrEmpty(attachment)) {
+			return " | Description: " + stepDescription + " | Evidence: " + attachment + " | ";
+		} else if (isNullOrEmpty(actualValue) && isNullOrEmpty(attachment)) {
+			return " | Description: " + stepDescription + " | Info: " + expectedValue + " | ";
+		} else if (isNullOrEmpty(attachment)) {
+			return " | Description: " + stepDescription + " | Expected: " + expectedValue + " | Actual: " + actualValue
+					+ " | ";
+		} else {
+			return " | Description: " + stepDescription + " | Expected: " + expectedValue + " | Actual: " + actualValue
+					+ " | Evidence: " + attachment + " | ";
+		}
+	}
+
+	/**
+	 * to let use know if given string is empty/null
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public boolean isNullOrEmpty(String element) {
+		if (element != null) {
+			if (element.trim().equals("")) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
 	}
 
 }

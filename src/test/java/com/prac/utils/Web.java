@@ -1,9 +1,18 @@
 package com.prac.utils;
 
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.time.Duration;
+import javax.imageio.ImageIO;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,6 +28,8 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import com.google.common.base.Function;
 import com.prac.framework.util.Constants;
+import com.prac.framework.util.ListenerClass;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
@@ -286,6 +297,73 @@ public class Web {
 			} else {
 				return false;
 			}
+		}
+	}
+
+	/**
+	 * take screenshot of webpage
+	 * 
+	 * @param driver   webdriver
+	 * @param fileName screenshotName
+	 * @return image path
+	 */
+	public String takeSceenShotWebPage(RemoteWebDriver driver, String fileName) {
+		String folderName = ListenerClass.reportingFolder.getPath() + "/Screenshot/";
+		File f = (new File(folderName));
+		if (!f.exists()) {
+			f.mkdirs();
+		}
+		String imgPath = folderName + fileName + ".jpg";
+		File s = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		try {
+			FileUtils.copyFile(s, new File(imgPath));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+		return "Screenshot/" + fileName + ".jpg";
+	}
+
+	public String takeSceenShotWebPage(WebDriver driver, String fileName) {
+		String folderName = ListenerClass.reportingFolder.getPath() + "/Screenshot/";
+		File f = (new File(folderName));
+		if (!f.exists()) {
+			f.mkdirs();
+		}
+		String imgPath = folderName + fileName + ".jpg";
+		File s = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		try {
+			FileUtils.copyFile(s, new File(imgPath));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+		return "Screenshot/" + fileName + ".jpg";
+	}
+
+	/**
+	 * take screenshot of webpage
+	 * 
+	 * @param driver   webdriver
+	 * @param fileName screenshotName
+	 * @return image path
+	 */
+
+	public String takeScreenShotScreenSnip(String fileName) {
+		String folderName = ListenerClass.reportingFolder.getPath() + "/Screenshot/";
+		File f = (new File(folderName));
+		if (!f.exists()) {
+			f.mkdirs();
+		}
+		String imgPath = folderName + fileName + ".png";
+		try {
+			BufferedImage img = new Robot()
+					.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+			ImageIO.write(img, "png", new File(imgPath));
+			return "Screenshot/" + fileName + ".png";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
 		}
 	}
 
