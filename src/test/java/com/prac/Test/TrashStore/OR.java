@@ -1,4 +1,4 @@
-package com.prac.TrashStore;
+package com.prac.Test.TrashStore;
 
 import com.prac.framework.util.Constants.WebLocator;
 

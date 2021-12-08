@@ -5,7 +5,9 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URL;
 import java.time.Duration;
+import java.util.Properties;
 import javax.imageio.ImageIO;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -21,8 +23,10 @@ import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -42,39 +46,64 @@ public class Web {
 	/***
 	 * to initialize webdriver based on sent browserName
 	 * 
-	 * @param browserName browser name for which we want to initialize driver
+	 * @param globalProperty global property to help in identification of how execution works
 	 * @return webdriver variable
 	 */
-	public synchronized WebDriver initializeWebDriver(String browserName) {
+	public synchronized WebDriver initializeWebDriver(Properties globalProperty) {
 		WebDriver driver = null;
+		String browserName= globalProperty.getProperty("browserName");
 		try {
-			switch (browserName.toUpperCase()) {
-			case "CHROME":
-				WebDriverManager.chromedriver().setup();
-				driver = new ChromeDriver();
-				break;
-			case "EDGE":
-			case "MSEDGE":
-				WebDriverManager.edgedriver().setup();
-				driver = new EdgeDriver();
-				break;
-			case "FIREFOX":
-				WebDriverManager.firefoxdriver().setup();
-				driver = new FirefoxDriver();
-				break;
-			case "IE":
-			case "INTERNETEXPLORER":
-				WebDriverManager.iedriver().setup();
-				driver = new InternetExplorerDriver();
-				break;
-			default:
-				throw new InvalidArgumentException("Invalid BrowserName");
+			if(globalProperty.getProperty("isRemote").toLowerCase().startsWith("n")) {
+				switch (browserName.toUpperCase()) {
+					case "CHROME":
+						WebDriverManager.chromedriver().setup();
+						driver = new ChromeDriver();
+						break;
+					case "EDGE":
+					case "MSEDGE":
+						WebDriverManager.edgedriver().setup();
+						driver = new EdgeDriver();
+						break;
+					case "FIREFOX":
+						WebDriverManager.firefoxdriver().setup();
+						driver = new FirefoxDriver();
+						break;
+					case "IE":
+					case "INTERNETEXPLORER":
+						WebDriverManager.iedriver().setup();
+						driver = new InternetExplorerDriver();
+						break;
+					default:
+						throw new InvalidArgumentException("Invalid BrowserName");
+				}
+			}
+			else{
+				URL url = new URL(globalProperty.getProperty("remoteUrl"));
+				switch (browserName.toUpperCase()) {
+					case "CHROME":
+						driver = new RemoteWebDriver(url,new ChromeOptions());
+						break;
+					case "EDGE":
+					case "MSEDGE":
+						driver = new RemoteWebDriver(url,new EdgeOptions());
+						break;
+					case "FIREFOX":
+						driver = new RemoteWebDriver(url,new FirefoxOptions());
+						break;
+					default:
+						throw new InvalidArgumentException("Invalid BrowserName");
+				}
 			}
 		} catch (InvalidArgumentException e) {
 			e.printStackTrace();
 			driver = null;
 			return driver;
+		} catch (Exception e) {
+			e.printStackTrace();
+			driver = null;
+			return driver;
 		}
+
 		return driver;
 	}
 
@@ -86,7 +115,7 @@ public class Web {
 	 *                    ChromeOptions/EdgeOptions
 	 * @return web driver reference initialized
 	 */
-	public <T> WebDriver initializeChromiumWebBrowsers(String browserName, ChromiumOptions<?> options) {
+	public <T> WebDriver initializeLocalChromiumWebBrowsers(String browserName, ChromiumOptions<?> options) {
 		WebDriver driver = null;
 		try {
 			switch (browserName.toUpperCase()) {
@@ -324,6 +353,12 @@ public class Web {
 		return "Screenshot/" + fileName + ".jpg";
 	}
 
+	/***
+	 *  take webpage snapshot
+	 * @param driver webdriver instance
+	 * @param fileName filename
+	 * @return return path for screenshot
+	 */
 	public String takeSceenShotWebPage(WebDriver driver, String fileName) {
 		String folderName = ListenerClass.reportingFolder.getPath() + "/Screenshot/";
 		File f = (new File(folderName));
@@ -342,9 +377,8 @@ public class Web {
 	}
 
 	/**
-	 * take screenshot of webpage
-	 * 
-	 * @param driver   webdriver
+	 * take screenshot of desktop
+	 *
 	 * @param fileName screenshotName
 	 * @return image path
 	 */
