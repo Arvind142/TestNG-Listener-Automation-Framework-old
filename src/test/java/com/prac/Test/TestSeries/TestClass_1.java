@@ -1,19 +1,13 @@
-package com.prac.TestSeries;
+package com.prac.Test.TestSeries;
 
-import java.io.File;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
-import com.prac.framework.util.ListenerClass;
 import com.prac.framework.util.TestNGBase;
-import com.prac.TrashStore.OR.the_internet;
-import com.prac.TrashStore.OR.guru99;
+import com.prac.Test.TrashStore.OR.the_internet;
+import com.prac.Test.TrashStore.OR.guru99;
 
 public class TestClass_1 extends TestNGBase {
 
@@ -95,7 +89,7 @@ public class TestClass_1 extends TestNGBase {
 			// initialize
 			EdgeOptions options = new EdgeOptions();
 			options.setHeadless(true);
-			WebDriver driver = web.initializeChromiumWebBrowsers("EDGE", options);
+			WebDriver driver = web.initializeLocalChromiumWebBrowsers("EDGE", options);
 			driver.get("http://the-internet.herokuapp.com/abtest");
 
 			// send values to field
@@ -103,10 +97,10 @@ public class TestClass_1 extends TestNGBase {
 			System.out.println(driver.getCurrentUrl());
 
 			web.sendKeys(driver, the_internet.login.username,
-					businessFunction.environmentLevelProperty.get("login.username").toString(), true, 5);
+					library.environmentLevelProperty.get("login.username").toString(), true, 5);
 
 			web.sendKeys(driver, the_internet.login.password,
-					businessFunction.environmentLevelProperty.get("login.password").toString(), true, 5);
+					library.environmentLevelProperty.get("login.password").toString(), true, 5);
 
 			web.getWebElement(driver, the_internet.login.submitButton, true, 5).click();
 
@@ -184,7 +178,7 @@ public class TestClass_1 extends TestNGBase {
 			// initialize
 			EdgeOptions options = new EdgeOptions();
 			options.setHeadless(true);
-			WebDriver driver = web.initializeChromiumWebBrowsers("EDGE", options);
+			WebDriver driver = web.initializeLocalChromiumWebBrowsers("EDGE", options);
 			driver.get("http://the-internet.herokuapp.com/abtest");
 
 			log(testName, "ScrenShot", "", "", web.takeSceenShotWebPage(driver, "SS"));

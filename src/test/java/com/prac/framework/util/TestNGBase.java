@@ -10,7 +10,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
-import com.prac.TrashStore.BusinessFunctions;
 import com.prac.utils.Web;
 import com.prac.utils.API;
 import com.prac.utils.Database;
@@ -38,7 +37,7 @@ public class TestNGBase {
 	/**
 	 * businessfunction variable to work with businessFunction methods
 	 */
-	protected BusinessFunctions businessFunction = new BusinessFunctions();
+	protected Library library = new Library();
 
 	/***
 	 * web object to work with web methods
@@ -75,7 +74,7 @@ public class TestNGBase {
 	 */
 	@BeforeClass
 	public void beforeClass() {
-		businessFunction.readEnvironmentLevelProperty();
+		library.readEnvironmentLevelProperty();
 		classLevel = new ConcurrentHashMap<String, List<TestLog>>();
 		className = this.getClass().getSimpleName();
 	}

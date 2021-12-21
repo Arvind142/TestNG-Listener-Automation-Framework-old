@@ -1,4 +1,4 @@
-package com.prac.TrashStore;
+package com.prac.Test.TrashStore;
 
 import org.openqa.selenium.WebDriver;
 import org.testng.SkipException;
@@ -32,7 +32,7 @@ public class TestClass_2 extends TestNGBase {
 
 	@DataProvider(name = "dataProvider", parallel = true)
 	public Object[][] dataProvider() {
-		return businessFunction.getDataFromExcel("Google");
+		return library.getDataFromExcel("Google");
 	}
 
 	@Test(dataProvider = "dataProvider")

@@ -130,7 +130,7 @@ public class ListenerClass implements ITestListener {
 	@Override
 	public void onTestSkipped(ITestResult result) {
 		System.out.println("Test Skipped");
-		setLog(result, "TESTNG: Skip");
+		setLog(result, "TESTNG : test case skipped!");
 		setTestCaseTimeStamp(result);
 	}
 
@@ -140,7 +140,6 @@ public class ListenerClass implements ITestListener {
 	@Override
 	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
 		System.out.println("Case Execution onTestFailedButWithinSuccessPercentage");
-
 	}
 
 	/**
@@ -150,7 +149,7 @@ public class ListenerClass implements ITestListener {
 	public void onTestFailedWithTimeout(ITestResult result) {
 		System.out.println("Case Execution onTestFailedWithTimeout");
 		// to log entry for timeout case
-		setLog(result, "TESTNG: Timeout error");
+		setLog(result, "TestNG : timeout execution!");
 		onTestFailure(result);
 	}
 
@@ -205,49 +204,18 @@ public class ListenerClass implements ITestListener {
 			System.out.println("Status: " + getTestCaseStatus(testResultMap.get(tc)) + " => " + tc);
 		}
 
-		if (applicationLevelProperty.get("jsonReport").toString().equalsIgnoreCase("Yes")) {
+		if (applicationLevelProperty.getProperty("jsonReport").toLowerCase().startsWith("y")) {
 			report = new JsonReport();
 			System.out.println(report.generateReport(reportingFolder) ? "Json export success!" : "Json export failed!");
 		}
 
-		if (applicationLevelProperty.get("excelReport").toString().equalsIgnoreCase("Yes")) {
+		if (applicationLevelProperty.getProperty("excelReport").toLowerCase().startsWith("y")) {
 			report = new ExcelReport();
 			System.out
 					.println(report.generateReport(reportingFolder) ? "Excel export success!" : "Excel export failed!");
 		}
 
 		extentReport.flush();
-
-		//opening report :)
-		if (applicationLevelProperty.get("openReport").toString().equalsIgnoreCase("Yes")) {
-			//identifying browser
-			String browserName=applicationLevelProperty.get("browserName").toString().toLowerCase();
-			String browserCmd="";
-			try{
-				if(applicationLevelProperty.contains("browserPath")){
-					browserCmd=applicationLevelProperty.get("browserPath").toString().replace("\\", "\\\\");
-					Runtime.getRuntime().exec(browserCmd +" file:///"+ reportingFolder.getAbsolutePath().replace("\\","/")+"/result.html");
-				}
-				else {
-					if(browserName.contains("edge")){
-						browserCmd="C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
-						Runtime.getRuntime().exec(browserCmd +" file:///"+ reportingFolder.getAbsolutePath().replace("\\","/")+"/result.html");
-					}
-					else if(browserName.contains("chrome") || browserName.contains("google")){
-						browserCmd="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-						Runtime.getRuntime().exec(browserCmd +" file:///"+ reportingFolder.getAbsolutePath().replace("\\","/")+"/result.html");
-					}
-					else{
-						System.out.println("Incorrect/Un-Supported browser name fetched.... browserName:"+browserName);
-					}
-				}
-			}
-			catch (Exception e){
-				System.out.println("Problem with browser opening, kingly find error code below");
-				e.printStackTrace();
-			}
-		}
-
 	}
 
 	/***
@@ -266,14 +234,14 @@ public class ListenerClass implements ITestListener {
 		}
 
 		ExtentTest test = ListenerClass.htmlTestLogs.get(methodName);
-		if (statement.contains("TESTNG: Skip")) {
+		if (statement.contains("skip")) {
 			LoggingClass.log.warning(methodName + ", Skipped");
-			test.log(Status.SKIP, statement);
-			singleLog.add(TestLog.logSkip("Test execution", statement));
+			singleLog.add(TestLog.logSkip("skip", statement));
+			test.log(Status.SKIP, singleLog.get(singleLog.size()-1).toString());
 		} else {
 			LoggingClass.log.severe(methodName + ", " + statement);
-			test.log(Status.FAIL, statement);
-			singleLog.add(TestLog.logError("Test Execution", statement));
+			singleLog.add(TestLog.logError("Interrupted! ", statement));
+			test.log(Status.FAIL, singleLog.get(singleLog.size()-1).toString());
 		}
 
 		if (testResultMap.containsKey(methodName)) {
