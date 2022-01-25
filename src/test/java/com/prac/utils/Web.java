@@ -53,28 +53,55 @@ public class Web {
 		WebDriver driver = null;
 		String browserName= globalProperty.getProperty("browserName");
 		try {
-			if(globalProperty.getProperty("isRemote").toLowerCase().startsWith("n")) {
-				switch (browserName.toUpperCase()) {
-					case "CHROME":
-						WebDriverManager.chromedriver().setup();
-						driver = new ChromeDriver();
-						break;
-					case "EDGE":
-					case "MSEDGE":
-						WebDriverManager.edgedriver().setup();
-						driver = new EdgeDriver();
-						break;
-					case "FIREFOX":
-						WebDriverManager.firefoxdriver().setup();
-						driver = new FirefoxDriver();
-						break;
-					case "IE":
-					case "INTERNETEXPLORER":
-						WebDriverManager.iedriver().setup();
-						driver = new InternetExplorerDriver();
-						break;
-					default:
-						throw new InvalidArgumentException("Invalid BrowserName");
+			if(globalProperty.getProperty("remoteExecution").toLowerCase().startsWith("n")) {
+				//WDM use confirmation
+				if(globalProperty.getProperty("useWebDriverManger").toLowerCase().startsWith("y")){
+					switch (browserName.toUpperCase()) {
+						case "CHROME":
+							WebDriverManager.chromedriver().setup();
+							driver = new ChromeDriver();
+							break;
+						case "EDGE":
+						case "MSEDGE":
+							WebDriverManager.edgedriver().setup();
+							driver = new EdgeDriver();
+							break;
+						case "FIREFOX":
+							WebDriverManager.firefoxdriver().setup();
+							driver = new FirefoxDriver();
+							break;
+						case "IE":
+						case "INTERNETEXPLORER":
+							WebDriverManager.iedriver().setup();
+							driver = new InternetExplorerDriver();
+							break;
+						default:
+							throw new InvalidArgumentException("Invalid BrowserName");
+					}
+				}
+				else{
+					switch (browserName.toUpperCase()) {
+						case "CHROME":
+							System.setProperty("webdriver.chrome.driver","Drivers/ChromeDriver.exe");
+							driver = new ChromeDriver();
+							break;
+						case "EDGE":
+						case "MSEDGE":
+							System.setProperty("webdriver.edge.driver","Drivers/EdgeDriver.exe");
+							driver = new EdgeDriver();
+							break;
+						case "FIREFOX":
+							System.setProperty("webdriver.gecko.driver","Drivers/GeckoDriver.exe");
+							driver = new FirefoxDriver();
+							break;
+						case "IE":
+						case "INTERNETEXPLORER":
+							System.setProperty("webdriver.ie.driver","Drivers/IEDriver.exe");
+							driver = new InternetExplorerDriver();
+							break;
+						default:
+							throw new InvalidArgumentException("Invalid BrowserName");
+					}
 				}
 			}
 			else{
