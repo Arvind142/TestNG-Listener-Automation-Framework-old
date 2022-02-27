@@ -1,4 +1,6 @@
 # Testing Framework:
+
+[![wakatime](https://wakatime.com/badge/github/Arvind142/Temp-Testing.svg)](https://wakatime.com/badge/github/Arvind142/Temp-Testing)
 ## Folder Structure 
  1. com.prac.framework.utils - holds **Framework** related classes and should not be edited/updated.
  2. com.prac.utils - It is an utility package which holds classes like Web.java(to work with web based automation - tool: selenium), Windows.java( to work with windows based application - tool: winium), API.java( API based automation - libraries: RestAssured) which will aid users in creation of scripts faster
