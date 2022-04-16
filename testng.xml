@@ -9,7 +9,7 @@
 	<test name="Test">
 		<!-- <classes> <class name="com.prac.TrashStore.FlowClass"></class> </classes> -->
 		<packages>
-			<package name="com.prac.Test.*" />
+			<package name="com.prac.Test.TrashStore.*" />
 		</packages>
 	</test> <!-- Test -->
 </suite> <!-- Suite -->
